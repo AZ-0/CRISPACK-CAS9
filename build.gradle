@@ -1,0 +1,42 @@
+plugins
+{
+    id 'java'
+    id 'application'
+}
+
+group = 'fr.az'
+version = '1.0'
+
+sourceCompatibility = 14
+targetCompatibility = 14
+
+configurations { fatImpl }
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	configurations.implementation.extendsFrom(configurations.fatImpl)
+	fatImpl 'com.beust:jcommander:1.78'
+	fatImpl 'org.json:json:20200518'
+	fatImpl 'io.projectreactor:reactor-core:3.3.7.RELEASE'
+}
+
+application {
+	mainClassName = 'fr.az.registry.App'
+}
+
+tasks.withType(JavaCompile) { options.encoding = 'UTF-8' }
+
+tasks.withType(Jar) {
+	from { configurations.fatImpl.collect { it.isRepository() ? it : zipTree(it) } }
+	
+	manifest {
+		attributes(
+			'Main-Class': application.mainClassName,
+			'Implementation-Title': project.name,
+			'Implementation-Version': version,
+			)
+	}
+}
