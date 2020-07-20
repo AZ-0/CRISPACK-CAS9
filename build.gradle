@@ -10,27 +10,27 @@ version = '1.0'
 sourceCompatibility = 14
 targetCompatibility = 14
 
-configurations { fatImpl }
+configurations { extra }
 
 repositories {
 	mavenCentral()
 }
 
 dependencies {
-	configurations.implementation.extendsFrom(configurations.fatImpl)
-	fatImpl 'com.beust:jcommander:1.78'
-	fatImpl 'org.json:json:20200518'
-	fatImpl 'io.projectreactor:reactor-core:3.3.7.RELEASE'
+	configurations.implementation.extendsFrom(configurations.extra)
+	extra 'com.beust:jcommander:1.78'
+	extra 'org.json:json:20200518'
+	extra 'io.projectreactor:reactor-core:3.3.7.RELEASE'
 }
 
 application {
-	mainClassName = 'fr.az.registry.App'
+	mainClassName = 'fr.az.crispack.App'
 }
 
 tasks.withType(JavaCompile) { options.encoding = 'UTF-8' }
 
 tasks.withType(Jar) {
-	from { configurations.fatImpl.collect { it.isRepository() ? it : zipTree(it) } }
+	from { configurations.extra.collect { it.isRepository() ? it : zipTree(it) } }
 	
 	manifest {
 		attributes(
