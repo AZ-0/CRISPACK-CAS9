@@ -1,6 +1,10 @@
 package fr.az.crispack.core.resolve;
 
+import java.util.List;
+
 import fr.az.crispack.core.resolve.flatten.DependencyTreeFlattener;
+import fr.az.crispack.core.resolve.flatten.FlatDependency;
+import fr.az.crispack.util.trees.visit.VisitSignal;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -19,26 +23,27 @@ public class Resolver
 	public void resolve(Iterable<? extends Dependency> dependencies)
 	{
 		Flux.fromIterable(dependencies)
-			.flatMapSequential(d -> this.createTree(d).then(Mono.just(d)))
-			.map(this::flatten)
-//			.buffer()
-//			.doOnNext(list -> list.forEach(d -> Dependency.ROOTS.visit(this.flattener, d)))
-//			TODO: synchronous flatMap to visit tree
+			.flatMapSequential(Resolver::createTree)
+			.buffer()
+			.flatMap(this::flatten)
+			//TODO: Resolve gathered dependencies
 			;
 	}
-	private Flux<Dependency> createTree(Dependency dependency)
+
+	public static Mono<Dependency> createTree(Dependency dependency) { return buildTree(dependency).then(Mono.just(dependency)); }
+	private static Flux<Dependency> buildTree(Dependency dependency)
 	{
-		return dependency.collect().flatMapSequential(this::createTree);
+		return dependency.collect().flatMap(Resolver::createTree);
 	}
 
-	private Dependency flatten(Dependency dependency)
+	private Flux<FlatDependency> flatten(List<Dependency> dependencies)
 	{
-		this.flattener.traverse(dependency);
-		return dependency;
+		for (Dependency dependency : dependencies)
+			if (this.flattener.traverse(dependency) == VisitSignal.STOP)
+				return Flux.empty();
+
+		return Flux.fromIterable(this.flattener.getDependencies());
 	}
-
-	public DependencyTreeFlattener flattener() { return this.flattener; }
-
 
 	public static class Builder
 	{
