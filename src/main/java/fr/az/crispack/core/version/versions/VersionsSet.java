@@ -5,7 +5,7 @@ import java.util.Set;
 
 import fr.az.crispack.core.version.Version;
 import fr.az.crispack.core.version.Versions;
-import fr.az.crispack.utils.Utils;
+import fr.az.crispack.util.Utils;
 
 public record VersionsSet(Set<Versions> versions) implements Versions
 {

@@ -1,4 +1,4 @@
-package fr.az.crispack.utils;
+package fr.az.crispack.util;
 
 @FunctionalInterface
 public interface CheckedFunction<I, O, T extends Throwable>

@@ -12,26 +12,29 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import fr.az.crispack.App;
+import fr.az.crispack.core.Repository;
+import fr.az.crispack.core.resolve.Dependency;
 import fr.az.crispack.core.version.Versions;
 import fr.az.crispack.core.version.table.VersionList;
 import fr.az.crispack.core.version.table.VersionTable;
 import fr.az.crispack.core.version.version.GithubVersion;
 import fr.az.crispack.property.Header;
 
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-public class GithubRepositories
+public class GithubRepository implements Repository
 {
 	private final String user;
 	private final Map<String, Versions> repos;
 
-	public GithubRepositories(String user)
+	public GithubRepository(String user)
 	{
 		this.user = user;
 		this.repos = new HashMap<>();
 	}
 
-	public GithubRepositories(String user, Map<String, ? extends Versions> repos)
+	public GithubRepository(String user, Map<String, ? extends Versions> repos)
 	{
 		this.user = user;
 		this.repos = new HashMap<>(repos);
@@ -95,4 +98,10 @@ public class GithubRepositories
 
 	public String user() { return this.user; }
 	public Map<String, Versions> repos() { return this.repos; }
+
+	@Override
+	public Flux<Dependency> collect(Dependency source)
+	{
+		return Flux.empty();
+	}
 }

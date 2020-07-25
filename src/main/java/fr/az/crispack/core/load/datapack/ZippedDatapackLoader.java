@@ -5,7 +5,7 @@ import java.util.Optional;
 import java.util.zip.ZipFile;
 
 import fr.az.crispack.core.pack.DataPack;
-import fr.az.crispack.utils.Utils;
+import fr.az.crispack.util.Utils;
 
 public class ZippedDatapackLoader implements DatapackLoader
 {

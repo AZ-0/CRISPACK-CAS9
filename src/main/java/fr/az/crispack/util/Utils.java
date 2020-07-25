@@ -1,4 +1,4 @@
-package fr.az.crispack.utils;
+package fr.az.crispack.util;
 
 import java.io.BufferedReader;
 import java.io.File;

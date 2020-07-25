@@ -9,11 +9,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import fr.az.crispack.core.Dependency;
 import fr.az.crispack.core.pack.PackType;
+import fr.az.crispack.core.resolve.Dependency;
 import fr.az.crispack.core.version.Version;
 import fr.az.crispack.core.version.version.LocalVersion;
-import fr.az.crispack.utils.Utils;
+import fr.az.crispack.util.Utils;
 
 public class McMetaReader
 {
