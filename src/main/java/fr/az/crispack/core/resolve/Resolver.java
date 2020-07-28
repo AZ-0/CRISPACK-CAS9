@@ -41,6 +41,7 @@ public class Resolver
 		for (Dependency dependency : dependencies)
 			if (this.flattener.traverse(dependency) == VisitSignal.STOP)
 				return Flux.empty();
+				//TODO: Throw error and completely stop evaluation
 
 		return Flux.fromIterable(this.flattener.getDependencies());
 	}
