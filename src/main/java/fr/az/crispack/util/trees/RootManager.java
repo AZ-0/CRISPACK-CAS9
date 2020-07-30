@@ -1,5 +1,6 @@
 package fr.az.crispack.util.trees;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -65,10 +66,10 @@ public class RootManager<N extends Node<N, I>, I>
 	 * @see Node#navigate(String, Function)
 	 * @see Node#getFullName()
 	 */
-	public Optional<N> navigate(I[] path, BiFunction<Node<N, I>, I, Optional<N>> navigator)
+	public Optional<N> navigate(I[] path, BiFunction<? super N, ? super I, ? extends N> navigator)
 	{
 		if (path.length > 0)
-			return this.getRoot(path[0]).flatMap(root -> root.navigate(path, navigator));
+			return this.getRoot(path[0]).flatMap(root -> root.navigate(Arrays.copyOfRange(path, 1, path.length), navigator));
 
 		return Optional.empty();
 	}

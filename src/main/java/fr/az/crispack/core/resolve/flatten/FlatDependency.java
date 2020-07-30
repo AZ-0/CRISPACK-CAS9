@@ -1,15 +1,19 @@
 package fr.az.crispack.core.resolve.flatten;
 
-import fr.az.crispack.core.Repository;
-import fr.az.crispack.core.resolve.Dependency;
-import fr.az.crispack.core.resolve.DependencyIdentity;
+import fr.az.crispack.core.dependency.Dependency;
+import fr.az.crispack.core.dependency.DependencyIdentity;
+import fr.az.crispack.core.dependency.DependencyNode;
+import fr.az.crispack.core.dependency.VersionedDependency;
 
-public  record FlatDependency(Dependency dependency, int depth) implements Comparable<FlatDependency>
+public  record FlatDependency(DependencyNode node, int depth)
 {
-	public Repository repository() { return this.identity().repository(); }
-	public DependencyIdentity identity() { return this.dependency.getIdentity(); }
+	public Dependency dependency() { return this.identity().dependency(); }
+	public DependencyIdentity identity() { return this.node.identity(); }
 
-	@Override public int compareTo(FlatDependency other) { return Integer.compare(this.depth, other.depth); }
+	public boolean hasVersion() { return this.node.hasVersion(); }
+	public VersionedDependency withVersion() { return this.node.withVersion(); }
 
-	@Override public String toString() { return this.dependency.toString(); }
+	public int compareTo(FlatDependency other) { return Integer.compare(this.depth, other.depth); }
+
+	@Override public String toString() { return this.node.toString(); }
 }

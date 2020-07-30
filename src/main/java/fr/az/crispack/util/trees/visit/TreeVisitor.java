@@ -18,7 +18,7 @@ public interface TreeVisitor<N extends Node<N, I>, I>
 			default:
 		}
 
-		for (N child : node.getChildren().values())
+		for (N child : node.children().values())
 			if (this.traverse(child, depth + 1) == VisitSignal.STOP)
 				return VisitSignal.STOP;
 

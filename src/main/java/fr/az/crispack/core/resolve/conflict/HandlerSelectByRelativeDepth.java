@@ -22,7 +22,7 @@ public class HandlerSelectByRelativeDepth implements ConflictHandler
 		else
 		{
 			App.logger().warning("Found both dependencies at same depth, resorting to default solver.");
-			return new ConflictHandlerFactory().get().solve(registered, concurrent);
+			return ConflictHandler.getDefault().solve(registered, concurrent);
 		}
 	}
 }

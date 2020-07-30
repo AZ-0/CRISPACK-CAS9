@@ -9,10 +9,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import fr.az.crispack.core.dependency.DependencyNode;
 import fr.az.crispack.core.pack.PackType;
-import fr.az.crispack.core.resolve.Dependency;
 import fr.az.crispack.core.version.Version;
-import fr.az.crispack.core.version.version.LocalVersion;
 import fr.az.crispack.util.Utils;
 
 public class McMetaReader
@@ -39,10 +38,10 @@ public class McMetaReader
 		PackType type	= meta.getEnum(PackType.class, "type");
 		String name		= meta.getString("name");
 		String author	= meta.getString("author");
-		Version version	= new LocalVersion(meta.getString("version"), null);
+		Version version	= null;
 
 		Set<String> tags				= this.readTags(meta.optJSONArray("tags"));
-		Set<Dependency> dependencies	= this.readDependencies(meta.optJSONArray("dependencies"));
+		Set<DependencyNode> dependencies	= this.readDependencies(meta.optJSONArray("dependencies"));
 
 		return new McMeta(type, name, author, version, tags, dependencies);
 	}
@@ -63,9 +62,9 @@ public class McMetaReader
 		return tags;
 	}
 
-	public Set<Dependency> readDependencies(JSONArray array) throws InvalidMetaException
+	public Set<DependencyNode> readDependencies(JSONArray array) throws InvalidMetaException
 	{
-		Set<Dependency> dependencies = new HashSet<>();
+		Set<DependencyNode> dependencies = new HashSet<>();
 
 		if (array == null)
 			return dependencies;
@@ -79,7 +78,7 @@ public class McMetaReader
 		return dependencies;
 	}
 
-	public Optional<Dependency> readDependency(JSONObject obj) throws InvalidMetaException
+	public Optional<DependencyNode> readDependency(JSONObject obj) throws InvalidMetaException
 	{
 		return Optional.empty();
 	}

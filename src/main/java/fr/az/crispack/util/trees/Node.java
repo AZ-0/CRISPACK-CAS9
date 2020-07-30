@@ -55,7 +55,7 @@ public class Node<N extends Node<N, I>, I> implements Serializable
 	 */
 	public Optional<N> makePath(I[] path)
 	{
-		return this.navigate(path, (node, name) -> Optional.of(node.getOrNewChild(name)));
+		return this.navigate(path, Node::getOrNewChild);
 	}
 
 	/**
@@ -66,9 +66,9 @@ public class Node<N extends Node<N, I>, I> implements Serializable
 	 * @return the target node, or null if it doesn't exist.
 	 * @see #navigate(String, Function)
 	 */
-	public Optional<N> getNode(I[] path)
+	public Optional<N> getChild(I[] path)
 	{
-		return this.navigate(path, Node::getChild);
+		return this.navigate(path, (node, identity) -> node.getChild(identity).orElse(null));
 	}
 
 	/**
@@ -85,18 +85,19 @@ public class Node<N extends Node<N, I>, I> implements Serializable
 	 * @see Node#getNode(String)
 	 * @see Node#makePath(String)
 	 */
-	public Optional<N> navigate(I[] path, BiFunction<Node<N, I>, I, Optional<N>> navigator)
+	public Optional<N> navigate(I[] path, BiFunction<? super N, ? super I, ? extends N> navigator)
 	{
-		if (path.length == 0) //Cannot initialize navigation
-			return Optional.empty();
-
-		//Handle first part of the navigation
-		Optional<N> node = navigator.apply(this, path[0]);
+		N node = this.cast();
 
 		for (I identity : path)
-			node = node.flatMap(n -> navigator.apply(n, identity));
+		{
+			node = navigator.apply(node, identity);
 
-		return node;
+			if (node == null)
+				return Optional.empty();
+		}
+
+		return Optional.of(node);
 	}
 
 	/**
@@ -124,7 +125,7 @@ public class Node<N extends Node<N, I>, I> implements Serializable
 		Node<N, I> node = this;
 
 		while (!node.isRoot())
-			node = node.getParent();
+			node = node.parent();
 
 		return node;
 	}
@@ -135,7 +136,7 @@ public class Node<N extends Node<N, I>, I> implements Serializable
 	 * @return wether the child exists.
 	 * @see Node#getLocalName()
 	 */
-	public boolean hasChild(I identity) { return this.getChildren().containsKey(identity); }
+	public boolean hasChild(I identity) { return this.children().containsKey(identity); }
 
 	/**
 	 * Get a child of this node, associated to the provided local name.
@@ -154,9 +155,9 @@ public class Node<N extends Node<N, I>, I> implements Serializable
 	public boolean isRoot() { return this.parent == null; }
 
 	/** @return this node's children, as an immutable map. */
-	public Map<String, N> getChildren() { return this.childrenImmutable; }
+	public Map<String, N> children() { return this.childrenImmutable; }
 
-	public N getParent() { return this.parent; }
+	public N parent() { return this.parent; }
 
 	/**
 	 * The local name of a node is its unique identifier <i>within its parent's children batch</i>.
@@ -167,5 +168,5 @@ public class Node<N extends Node<N, I>, I> implements Serializable
 	 * <br>Note : navigation requires you to stack a child's local name to its parent's with <code>.</code>
 	 * @return the local name of this node.
 	 */
-	public I getIdentity() { return this.identity; }
+	public I identity() { return this.identity; }
 }

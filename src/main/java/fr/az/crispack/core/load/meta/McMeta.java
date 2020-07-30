@@ -2,11 +2,11 @@ package fr.az.crispack.core.load.meta;
 
 import java.util.Set;
 
+import fr.az.crispack.core.dependency.DependencyNode;
 import fr.az.crispack.core.pack.PackType;
-import fr.az.crispack.core.resolve.Dependency;
 import fr.az.crispack.core.version.Version;
 
-public record McMeta(PackType type, String name, String author, Version version, Set<String> tags, Set<Dependency> dependencies)
+public record McMeta(PackType type, String name, String author, Version version, Set<String> tags, Set<DependencyNode> dependencies)
 {
 
 }

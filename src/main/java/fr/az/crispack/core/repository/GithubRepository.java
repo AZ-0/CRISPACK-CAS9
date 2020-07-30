@@ -3,21 +3,17 @@ package fr.az.crispack.core.repository;
 import java.net.URI;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
-import java.util.function.BiFunction;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import fr.az.crispack.App;
 import fr.az.crispack.core.Repository;
-import fr.az.crispack.core.resolve.Dependency;
-import fr.az.crispack.core.version.Versions;
-import fr.az.crispack.core.version.table.VersionList;
-import fr.az.crispack.core.version.table.VersionTable;
-import fr.az.crispack.core.version.version.GithubVersion;
+import fr.az.crispack.core.dependency.Dependency;
+import fr.az.crispack.core.version.Version;
 import fr.az.crispack.property.Header;
 
 import reactor.core.publisher.Flux;
@@ -26,21 +22,13 @@ import reactor.core.publisher.Mono;
 public class GithubRepository implements Repository
 {
 	private final String user;
-	private final Map<String, Versions> repos;
 
 	public GithubRepository(String user)
 	{
 		this.user = user;
-		this.repos = new HashMap<>();
 	}
 
-	public GithubRepository(String user, Map<String, ? extends Versions> repos)
-	{
-		this.user = user;
-		this.repos = new HashMap<>(repos);
-	}
-
-	public Mono<VersionTable> getTable(String repo)
+	public Mono<List<Version>> getTable(String repo)
 	{
 		HttpRequest request = HttpRequest.newBuilder()
 			.GET()
@@ -54,13 +42,13 @@ public class GithubRepository implements Repository
 				.flatMap(Mono::justOrEmpty);
 	}
 
-	private Optional<VersionTable> handleResponse(HttpResponse<String> response)
+	private Optional<List<Version>> handleResponse(HttpResponse<String> response)
 	{
 		switch (response.statusCode())
 		{
 			case 200:
 				JSONArray body = new JSONArray(response.body());
-				VersionTable table = new VersionList();
+				List<Version> table = new ArrayList<>();
 
 				for (int i = 0; i < body.length(); i++)
 				{
@@ -68,7 +56,7 @@ public class GithubRepository implements Repository
 					String name		= tag.getString("name");
 					String url		= tag.getString("zipball_url");
 
-					table.register(new GithubVersion(name, table, i, url));
+					table.add(null);
 				}
 
 				return Optional.of(table);
@@ -82,22 +70,7 @@ public class GithubRepository implements Repository
 		}
 	}
 
-	public void put(String repository, Versions target) { this.repos.put(repository, target); }
-	public boolean has(String repository) { return this.repos.containsKey(repository); }
-
-	public void and(String repository, Versions combineWith) { this.combine(repository, combineWith, Versions::and); }
-	public void or (String repository, Versions combineWith) { this.combine(repository, combineWith, Versions::or);  }
-
-	public void combine(String repository, Versions with, BiFunction<Versions, Versions, Versions> combinator)
-	{
-		Versions old = this.repos.putIfAbsent(repository, with);
-
-		if (old != null)
-			this.repos.put(repository, combinator.apply(old, with));
-	}
-
 	public String user() { return this.user; }
-	public Map<String, Versions> repos() { return this.repos; }
 
 	@Override
 	public Flux<Dependency> collect(Dependency source)

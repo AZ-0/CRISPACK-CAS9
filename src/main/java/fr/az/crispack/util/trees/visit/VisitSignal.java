@@ -6,4 +6,6 @@ public enum VisitSignal
 	CONTINUE,
 	DROP,
 	;
+
+	@Override public String toString() { return this.name().toLowerCase().replace('_', ' '); }
 }
