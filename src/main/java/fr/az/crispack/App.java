@@ -33,7 +33,7 @@ public class App
 	public App()
 	{
 		this.logger = FACTORY.getLoggingStrategy(MODE);
-		this.http = HttpClient.newHttpClient();
+		this.http = HttpClient.newBuilder().build();
 	}
 
 	public LoggingStrategy getLogger() { return this.logger; };

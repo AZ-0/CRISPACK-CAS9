@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.http.HttpRequest;
 import java.nio.file.Files;
 import java.util.HashSet;
 import java.util.Set;
@@ -12,6 +13,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import fr.az.crispack.App;
+import fr.az.crispack.property.Header;
 
 public class Utils
 {
@@ -37,6 +39,16 @@ public class Utils
 			App.logger().error(e);
 			return "";
 		}
+	}
+
+	public static HttpRequest.Builder request()
+	{
+		HttpRequest.Builder builder = HttpRequest.newBuilder();
+
+		for (Header header : Header.values())
+			builder.setHeader(header.header(), header.value());
+
+		return builder;
 	}
 
 	@SafeVarargs

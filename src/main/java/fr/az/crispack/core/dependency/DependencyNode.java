@@ -6,25 +6,25 @@ import fr.az.crispack.util.trees.RootManager;
 
 import reactor.core.publisher.Flux;
 
-public class DependencyNode extends Node<DependencyNode, DependencyIdentity>
+public class DependencyNode extends Node<DependencyNode, NodeIdentity>
 {
 	private static final long serialVersionUID = 3600285215880142304L;
 
-	public static final RootManager<DependencyNode, DependencyIdentity> ROOTS = new RootManager<>(DependencyNode::new);
+	public static final RootManager<DependencyNode, NodeIdentity> ROOTS = new RootManager<>(DependencyNode::new);
 
 	public static DependencyNode root(Dependency from)
 	{
-		return ROOTS.getOrNewRoot(new DependencyIdentity(from));
+		return ROOTS.getOrNewRoot(new NodeIdentity(from));
 	}
 
 	// ROOT CONSTRUCTOR
-	private DependencyNode(DependencyIdentity identity)
+	private DependencyNode(NodeIdentity identity)
 	{
 		super(identity, DependencyNode::new);
 	}
 
 	// NODE CONSTRUCTOR
-	private DependencyNode(DependencyNode parent, DependencyIdentity identity, NodeFactory<DependencyNode, DependencyIdentity> factory)
+	private DependencyNode(DependencyNode parent, NodeIdentity identity, NodeFactory<DependencyNode, NodeIdentity> factory)
 	{
 		super(parent, identity, factory);
 	}

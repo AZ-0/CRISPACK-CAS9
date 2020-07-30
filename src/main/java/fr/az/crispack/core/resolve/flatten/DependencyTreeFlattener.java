@@ -1,28 +1,28 @@
 package fr.az.crispack.core.resolve.flatten;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 import fr.az.crispack.App;
 import fr.az.crispack.core.dependency.Dependency;
-import fr.az.crispack.core.dependency.DependencyIdentity;
 import fr.az.crispack.core.dependency.DependencyNode;
+import fr.az.crispack.core.dependency.NodeIdentity;
 import fr.az.crispack.core.resolve.conflict.ConflictHandler;
 import fr.az.crispack.core.resolve.conflict.ConflictHandlingStrategy;
 import fr.az.crispack.core.resolve.conflict.VersionConflictException;
-import fr.az.crispack.core.version.VersionIdentity;
 import fr.az.crispack.util.trees.visit.TreeVisitor;
 import fr.az.crispack.util.trees.visit.VisitSignal;
 
-public class DependencyTreeFlattener implements TreeVisitor<DependencyNode, DependencyIdentity>
+public class DependencyTreeFlattener implements TreeVisitor<DependencyNode, NodeIdentity>
 {
 	public static DependencyTreeFlattener of() { return builder().build(); }
 	public static Builder builder() { return new Builder(); }
 
 	private final List<Dependency> dependencies;
-	private final Map<VersionIdentity, FlatDependency> versioned;
+	private final Set<FlatDependency> versioned;
 
 	private final VisitSignal signalOnConflict;
 	private ConflictHandler conflictHandler;
@@ -30,7 +30,7 @@ public class DependencyTreeFlattener implements TreeVisitor<DependencyNode, Depe
 	private DependencyTreeFlattener(ConflictHandler conflictHandler, VisitSignal signalOnConflict)
 	{
 		this.dependencies		= new ArrayList<>();
-		this.versioned			= new HashMap<>();
+		this.versioned			= new HashSet<>();
 
 		this.signalOnConflict	= signalOnConflict;
 		this.conflictHandler	= conflictHandler;
@@ -45,12 +45,28 @@ public class DependencyTreeFlattener implements TreeVisitor<DependencyNode, Depe
 			return VisitSignal.CONTINUE;
 		}
 
-		FlatDependency concurrent = new FlatDependency(node, depth);
-		FlatDependency registered = this.versioned.putIfAbsent(node.withVersion().version().identity(), concurrent);
+		Dependency candidate = node.dependency();
+		FlatDependency concurrent = new FlatDependency(candidate, depth);
+		FlatDependency registered = null;
+
+		Iterator<FlatDependency> iterator = this.versioned.iterator();
+
+		while (iterator.hasNext())
+		{
+			FlatDependency next = iterator.next();
+
+			if (next.dependency().isSimilar(candidate) && !next.withVersion().hasSameVersion(candidate.withVersion()))
+			{
+				iterator.remove();
+				registered = next;
+				break;
+			}
+		}
 
 		if (registered != null)
 			return this.handleConflict(registered, concurrent);
 
+		this.versioned.add(concurrent);
 		return VisitSignal.CONTINUE;
 	}
 
@@ -72,14 +88,14 @@ public class DependencyTreeFlattener implements TreeVisitor<DependencyNode, Depe
 		App.logger().warning("Resolved conflict with: "+ chosen);
 
 		if (chosen.hasVersion())
-			this.versioned.put(chosen.withVersion().version().identity(), chosen);
+			this.versioned.add(chosen);
 
 		return VisitSignal.CONTINUE;
 	}
 
 	public List<Dependency> finish()
 	{
-		this.versioned.values().forEach(flat -> this.dependencies.add(flat.dependency()));
+		this.versioned.forEach(flat -> this.dependencies.add(flat.dependency()));
 		this.versioned.clear();
 		return this.dependencies;
 	}
