@@ -9,9 +9,6 @@ import reactor.core.publisher.Flux;
 
 public record GithubDependency(String author, String repository, PackType type, Version version) implements VersionedDependency
 {
-	@Override public PackType type() { return this.type; }
-	@Override public Version version() { return this.version; }
-
 	@Override
 	public GithubDependency toVersion(Version version)
 	{

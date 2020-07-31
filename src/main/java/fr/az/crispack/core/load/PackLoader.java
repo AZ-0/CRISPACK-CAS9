@@ -10,7 +10,6 @@ import java.util.Set;
 import fr.az.crispack.App;
 import fr.az.crispack.core.Save;
 import fr.az.crispack.core.pack.DataPack;
-import fr.az.crispack.core.pack.ResourcesPack;
 import fr.az.crispack.property.Properties;
 import fr.az.crispack.util.Util;
 
@@ -20,20 +19,17 @@ public class PackLoader
 
 	private final Map<String, Save> saves;
 	private final Map<String, DataPack> datapacks;
-	private final Map<String, ResourcesPack> resourcesPacks;
 
 	public PackLoader()
 	{
 		this.saves = new HashMap<>();
 		this.datapacks = new HashMap<>();
-		this.resourcesPacks = new HashMap<>();
 	}
 
 	public void reload()
 	{
 		this.saves.clear();
 		this.datapacks.clear();
-		this.resourcesPacks.clear();
 
 		Properties.getSaves()
 				  .filter(Util::existsDir)
@@ -131,5 +127,4 @@ public class PackLoader
 
 	public Map<String, Save> saves() { return this.saves; }
 	public Map<String, DataPack> datapacks() { return this.datapacks; }
-	public Map<String, ResourcesPack> resourcesPacks() { return this.resourcesPacks; }
 }

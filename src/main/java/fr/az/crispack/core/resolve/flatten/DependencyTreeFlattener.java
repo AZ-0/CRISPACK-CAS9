@@ -10,6 +10,7 @@ import fr.az.crispack.App;
 import fr.az.crispack.core.dependency.Dependency;
 import fr.az.crispack.core.dependency.DependencyNode;
 import fr.az.crispack.core.dependency.NodeIdentity;
+import fr.az.crispack.core.dependency.VersionedDependency;
 import fr.az.crispack.core.resolve.conflict.ConflictHandler;
 import fr.az.crispack.core.resolve.conflict.ConflictHandlingStrategy;
 import fr.az.crispack.core.resolve.conflict.VersionConflictException;
@@ -29,11 +30,11 @@ public class DependencyTreeFlattener implements TreeVisitor<DependencyNode, Node
 
 	private DependencyTreeFlattener(ConflictHandler conflictHandler, VisitSignal signalOnConflict)
 	{
-		this.dependencies		= new ArrayList<>();
-		this.versioned			= new HashSet<>();
+		this.dependencies = new ArrayList<>();
+		this.versioned = new HashSet<>();
 
-		this.signalOnConflict	= signalOnConflict;
-		this.conflictHandler	= conflictHandler;
+		this.signalOnConflict = signalOnConflict;
+		this.conflictHandler = conflictHandler;
 	}
 
 	@Override
@@ -45,7 +46,7 @@ public class DependencyTreeFlattener implements TreeVisitor<DependencyNode, Node
 			return VisitSignal.CONTINUE;
 		}
 
-		Dependency candidate = node.dependency();
+		VersionedDependency candidate = node.dependency().withVersion();
 		FlatDependency concurrent = new FlatDependency(candidate, depth);
 		FlatDependency registered = null;
 
@@ -55,7 +56,7 @@ public class DependencyTreeFlattener implements TreeVisitor<DependencyNode, Node
 		{
 			FlatDependency next = iterator.next();
 
-			if (next.dependency().isSimilar(candidate) && !next.withVersion().hasSameVersion(candidate.withVersion()))
+			if (next.dependency().isSimilar(candidate) && !next.dependency().hasSameVersion(candidate))
 			{
 				iterator.remove();
 				registered = next;
@@ -87,8 +88,7 @@ public class DependencyTreeFlattener implements TreeVisitor<DependencyNode, Node
 
 		App.logger().warning("Resolved conflict with: "+ chosen);
 
-		if (chosen.hasVersion())
-			this.versioned.add(chosen);
+		this.versioned.add(chosen);
 
 		return VisitSignal.CONTINUE;
 	}

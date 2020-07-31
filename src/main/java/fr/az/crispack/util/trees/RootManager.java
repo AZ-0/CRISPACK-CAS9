@@ -1,6 +1,7 @@
 package fr.az.crispack.util.trees;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -20,6 +21,7 @@ public class RootManager<N extends Node<N, I>, I>
 {
 	private final Function<I, N> rootProducer;
 	private final Map<I, N> roots;
+	private final Map<I, N> rootsImmutable;
 
 	/**
 	 * Constructor.
@@ -28,7 +30,9 @@ public class RootManager<N extends Node<N, I>, I>
 	public RootManager(Function<I, N> rootProducer)
 	{
 		this.rootProducer = rootProducer;
+
 		this.roots = new HashMap<>();
+		this.rootsImmutable = Collections.unmodifiableMap(this.roots);
 	}
 
 	/**
@@ -92,4 +96,6 @@ public class RootManager<N extends Node<N, I>, I>
 
 		return VisitSignal.DROP;
 	}
+
+	public Map<I, N> asMap() { return this.rootsImmutable; }
 }
