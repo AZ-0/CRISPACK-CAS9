@@ -1,7 +1,5 @@
 package fr.az.crispack.core.load;
 
-import java.io.File;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,6 +12,7 @@ import fr.az.crispack.core.Save;
 import fr.az.crispack.core.pack.DataPack;
 import fr.az.crispack.core.pack.ResourcesPack;
 import fr.az.crispack.property.Properties;
+import fr.az.crispack.util.Util;
 
 public class PackLoader
 {
@@ -36,16 +35,16 @@ public class PackLoader
 		this.datapacks.clear();
 		this.resourcesPacks.clear();
 
-		Path savesFolder = Properties.savesFolder();
-		for (File dir : savesFolder.toFile().listFiles(File::isDirectory))
-			this.register(this.loadSave(dir.toPath(), true));
+		Properties.getSaves()
+				  .filter(Util::existsDir)
+				  .forEach(path -> this.register(this.loadSave(path, true)));
 	}
 
 	public Optional<Save> loadSave(String name, boolean register)
 	{
-		Path saveFolder = Properties.savesFolder().resolve(name);
+		Path saveFolder = Properties.getSaveFolder(name);
 
-		if (Files.isDirectory(saveFolder))
+		if (Util.existsDir(saveFolder))
 			return Optional.of(this.loadSave(saveFolder, register));
 
 		return Optional.empty();
@@ -53,67 +52,73 @@ public class PackLoader
 
 	public Optional<DataPack> loadDataPack(String name, boolean register)
 	{
-		Path savesFolder = Properties.savesFolder();
 		Set<Path> candidates = new HashSet<>();
 
-		for (File save : savesFolder.toFile().listFiles(File::isDirectory))
-		{
-			save = new File(save, "datapacks");
-
-			for (File candidate : save.listFiles((f, n) -> n.equals(name)))
-				candidates.add(candidate.toPath());
-		}
+		Properties.getDatapacks()
+				  .filter(path -> path.getFileName().toString().equals(name))
+				  .forEach(candidates::add);
 
 		if (candidates.isEmpty())
 		{
-			App.logger().info("Could not find datapack with name '%s'".formatted(name));
+			App.logger().warning("Could not find any datapack with name '%s'".formatted(name));
 			return Optional.empty();
 		}
 
+		App.logger().info("Found %s datapack(s) matching '%s'".formatted(candidates.size(), name));
+
 		for (Path candidate : candidates)
 		{
-			String save = candidate.getParent().getParent().getFileName().toString();
-			Optional<DataPack> datapack = this.loadDataPack(save, candidate);
+			String saveName = candidate.getParent().getParent().getFileName().toString();
+			Optional<DataPack> opt = this.loadDataPack(saveName, candidate);
 
-			if (datapack.isPresent())
-			{
-				this.datapacks.put(datapack.get().name(), datapack.get());
-				return datapack;
-			}
+			this.registerDataPack(opt, this.datapacks);
+			if (opt.isPresent())
+				return opt;
 		}
 
 		return Optional.empty();
 	}
 
-	public Save loadSave(Path dir, boolean register)
+	public Save loadSave(Path save, boolean register)
 	{
-		String name = dir.getFileName().toString();
-		Path datapacksFolder = dir.resolve("datapacks");
+		String name = save.getFileName().toString();
+		Path datapacksFolder = Properties.getDatapackFolder(save);
 		Map<String, DataPack> datapacks = new HashMap<>();
 
-		App.logger().info("} Loading map %s".formatted(name));
+		App.logger().info("++++++++++ Loading map '%s' ++++++++++".formatted(name));
 
-		if (Files.notExists(datapacksFolder) || !Files.isDirectory(datapacksFolder))
-			return this.register(new Save(name, datapacks, dir), register);
+		if (!Util.existsDir(datapacksFolder))
+			return this.finishLoadSave(name, datapacks, save, register);
 
-		for (File file : datapacksFolder.toFile().listFiles())
-			this.loadDataPack(name, file.toPath()).ifPresent(datapack -> datapacks.put(datapack.name(), datapack));
+		Util.list(datapacksFolder)
+			.map(dp -> this.loadDataPack(name, dp))
+			.forEach(dp -> this.registerDataPack(dp, datapacks));
 
-		return this.register(new Save(name, datapacks, dir), register);
+		return this.finishLoadSave(name, datapacks, save, register);
 	}
 
-	public Optional<DataPack> loadDataPack(String save, Path path)
+	private void registerDataPack(Optional<DataPack> pack, Map<String, DataPack> registry)
 	{
-		return LOADING_FACTORY.produceDatapackLoader(path).loadDataPack(save);
+		if (pack.isPresent())
+		{
+			DataPack dp = pack.get();
+			registry.put(dp.name(), dp);
+		}
 	}
 
-
-	private Save register(Save save, boolean register)
+	private Save finishLoadSave(String name, Map<String, DataPack> datapacks, Path dir, boolean register)
 	{
+		Save save = new Save(name, datapacks, dir);
+
 		if (register)
 			this.register(save);
 
 		return save;
+	}
+
+	public Optional<DataPack> loadDataPack(String save, Path path)
+	{
+		return LOADING_FACTORY.getDatapackLoader(path).loadDataPack(save);
 	}
 
 	private void register(Save save)

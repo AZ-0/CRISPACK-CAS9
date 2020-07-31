@@ -1,6 +1,7 @@
 package fr.az.crispack.impl.github;
 
 import java.net.URI;
+import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,8 +12,9 @@ import org.json.JSONObject;
 
 import fr.az.crispack.App;
 import fr.az.crispack.core.dependency.Dependency;
+import fr.az.crispack.core.pack.PackType;
 import fr.az.crispack.util.StringSubscriber;
-import fr.az.crispack.util.Utils;
+import fr.az.crispack.util.Util;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -25,27 +27,25 @@ public class GithubRequests
 
 	private final Map<GithubTable.Identity, GithubTable> tables = new HashMap<>();
 
-	public Mono<GithubTable> getTable(String author, String repo)
+	public Mono<GithubTable> getTable(PackType type, GithubTable.Identity identity)
 	{
-		return Mono.fromSupplier
-		(
-			() -> Utils.request()
+		HttpRequest request = Util.request()
 				.GET()
-				.uri(URI.create("https://api.github.com/repos/%s/%s/tags".formatted(author, repo)))
-				.build()
-		)
-		.map(request -> App.http().sendAsync(request, StringSubscriber.handleString(JSONArray::new)))
-		.flatMap(Mono::fromFuture)
-		.map(this::handleResponse)
-		.flatMap(Mono::justOrEmpty)
-		.doOnNext(table -> this.tables.put(new GithubTable.Identity(author, repo), table));
+				.uri(URI.create("https://api.github.com/repos/%s/%s/tags".formatted(identity.author(), identity.repository())))
+				.build();
+
+		return Mono
+				.fromFuture(() -> App.http().sendAsync(request, StringSubscriber.handleString(JSONArray::new)))
+				.map(response -> this.handleResponse(type, identity.author(), identity.repository(), response))
+				.flatMap(Mono::justOrEmpty)
+				.doOnNext(table -> this.tables.put(identity, table));
 	}
 
-	private Optional<GithubTable> handleResponse(HttpResponse<JSONArray> response)
+	private Optional<GithubTable> handleResponse(PackType type, String author, String repo, HttpResponse<JSONArray> response)
 	{
 		switch (response.statusCode())
 		{
-			case 200: return this.handleOK(response);
+			case 200: return this.handleOK(type, author, repo, response);
 
 			case 304: //TODO: Not Modified
 			case 404: //TODO: Not Found
@@ -57,10 +57,10 @@ public class GithubRequests
 		}
 	}
 
-	private Optional<GithubTable> handleOK(HttpResponse<JSONArray> response)
+	private Optional<GithubTable> handleOK(PackType type, String author, String repo, HttpResponse<JSONArray> response)
 	{
 		JSONArray body = response.body();
-		GithubTable table = new GithubTable();
+		GithubTable table = new GithubTable(type, author, repo);
 
 		for (int i = 0; i < body.length(); i++)
 		{
@@ -71,7 +71,7 @@ public class GithubRequests
 			JSONObject commit = obj.getJSONObject("commit");
 			String sha = commit.getString("sha");
 
-			table.add(new GithubTag(tag, sha, zip));
+			table.add(tag, sha, zip);
 		}
 
 		return Optional.of(table);
@@ -83,7 +83,7 @@ public class GithubRequests
 
 		return Mono
 			.justOrEmpty(this.tables.get(identity))
-			.switchIfEmpty(this.getTable(source.author(), source.repository()))
+			.switchIfEmpty(this.getTable(source.type(), identity))
 			.map(table -> table.get(source.version().name()))
 			.flatMapMany(GithubTag::getDependencies);
 	}

@@ -7,39 +7,60 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.http.HttpRequest;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import fr.az.crispack.App;
 import fr.az.crispack.property.Header;
 
-public class Utils
+public class Util
 {
-	public static boolean isDigit(int character) { return Utils.isDigit((char) character); }
+	public static boolean isDigit(int character) { return Util.isDigit((char) character); }
 	public static boolean isDigit(char c) { return c >= '0' && c <= '9'; }
 	public static boolean isAlpha(char c) { return c >= 'a' && c <= 'z' || c >= 'A' && c <= 'z'; }
-	public static boolean isAlphaNumeric(char c) { return Utils.isAlpha(c) || Utils.isDigit(c); }
+	public static boolean isAlphaNumeric(char c) { return Util.isAlpha(c) || Util.isDigit(c); }
 
 	//FUCK YOU JAVA GENERICITY AND RAW TYPES
 
 	public static String getContent(File file)
 	{
-		return Utils.safeOp(file.toPath(), Files::readString, () -> "", () -> "");
+		return Util.safeOp(file.toPath(), Files::readString, () -> "", () -> "");
 	}
 
 	public static String getContent(InputStream stream)
 	{
 		try (BufferedReader reader = new BufferedReader(new InputStreamReader(stream)))
 		{
-			return reader.lines().reduce("", (a, b) -> a + b);
+			return reader.lines().reduce("", String::concat);
 		} catch (IOException e)
 		{
 			App.logger().error(e);
 			return "";
 		}
 	}
+
+	public static boolean exists	(Path path) { return path != null && Files.exists(path); }
+	public static boolean existsDir	(Path path) { return exists(path) && Files.isDirectory(path); }
+	public static boolean existsFile(Path path) { return exists(path) && !Files.isDirectory(path); }
+
+	public static Stream<Path> list(Path path)
+	{
+		try
+		{
+			return Files.list(path);
+		} catch (IOException e)
+		{
+			App.logger().error(e);
+			return Stream.empty();
+		}
+	}
+
+	public static Stream<Path> listDirs	(Path path) { return list(path).filter(Util::existsDir); }
+	public static Stream<Path> listFiles(Path path) { return list(path).filter(Util::existsFile); }
 
 	public static HttpRequest.Builder request()
 	{
@@ -81,16 +102,16 @@ public class Utils
 	// OPERATIONS
 
 	public static <R, U, T extends Throwable> U safeOp(R in, CheckedFunction<R, U, T> op) {
-		return Utils.safeOp(in, op, Utils.errorLogger(() -> null), () -> null); }
+		return Util.safeOp(in, op, Util.errorLogger(() -> null), () -> null); }
 
 	public static <R, U, T extends Throwable> U safeOp(R in, CheckedFunction<R, U, T> op, Supplier<U> checked) {
-		return Utils.safeOp(in, op, Utils.errorLogger(checked), () -> null); }
+		return Util.safeOp(in, op, Util.errorLogger(checked), () -> null); }
 
 	public static <R, U, T extends Throwable> U safeOp(R in, CheckedFunction<R, U, T> op, Supplier<U> checked, Supplier<U> unchecked) {
-		return Utils.safeOp(in, op, Utils.errorLogger(checked), unchecked); }
+		return Util.safeOp(in, op, Util.errorLogger(checked), unchecked); }
 
 	public static <R, U, T extends Throwable> U safeOp(R in, CheckedFunction<R, U, T> op, Function<T, U> checked, Supplier<U> valueOnUnchecked) {
-		return Utils.safeOp(in, op, checked, Utils.errorLogger(valueOnUnchecked)); }
+		return Util.safeOp(in, op, checked, Util.errorLogger(valueOnUnchecked)); }
 
 	public static <R, U, T extends Throwable> U safeOp(R in, CheckedFunction<R, U, T> op, Function<T, U> checked, Function<Throwable, U> unchecked)
 	{

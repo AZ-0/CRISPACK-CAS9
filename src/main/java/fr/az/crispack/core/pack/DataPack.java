@@ -11,7 +11,7 @@ public record DataPack(McMeta meta, PackIdentity identity) implements Pack<DataP
 {
 	public DataPack
 	{
-		if (identity.type() != PackType.DATA_PACK)
+		if (identity.type() != PackType.DATAPACK)
 			throw new IllegalArgumentException("A datapack identity may only have datapack type.");
 	}
 

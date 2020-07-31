@@ -4,77 +4,102 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.stream.Stream;
 
 import fr.az.crispack.App;
+import fr.az.crispack.core.pack.PackType;
+import fr.az.crispack.util.Util;
 
 public class Properties
 {
-	private static final String APP_NAME = "DPDM";
+	public static final String APP_NAME = "CRISPACK-CAS9";
+	public static final String SAVE_DATAPACK_FOLDER = "datapacks";
+	public static final String ZIP_CACHE_FILE_NAME = "content.zip";
 
-	private static OS OPERATING_SYSTEM;
+	private static Os OS;
 	private static Path MC_FOLDER;
 	private static Path SAVES_FOLDER;
-	private static Path PROGRAM_FOLDER;
-	private static Path DATAPACKS_FOLDER;
-	private static Path RESOURCEPACKS_FOLDER;
+	private static Path APP_FOLDER;
 
-	public static String appName() { return APP_NAME; }
-	public static OS os() { return OPERATING_SYSTEM; }
+	public static Os os() { return OS; }
 	public static Path minecraftFolder() { return MC_FOLDER; }
 	public static Path savesFolder() { return SAVES_FOLDER; }
-	public static Path programFolder() { return PROGRAM_FOLDER; }
-	public static Path datapacksFolder() { return DATAPACKS_FOLDER; }
-	public static Path resourcepacksFolder() { return RESOURCEPACKS_FOLDER; }
+	public static Path appFolder() { return APP_FOLDER; }
+
+	// --------------
+	// | TINY LOGIC |
+	// --------------
+
+	public static Path getAppPath(PackType type) { return APP_FOLDER.resolve(type.dirName()); }
+	public static Path getAppPath(PackType type, String first, String... more)
+	{
+		return getAppPath(type).resolve(Path.of(first, more));
+	}
+
+	public static Path getSaveFolder(String save) { return SAVES_FOLDER.resolve(save); }
+
+	public static Path getDatapackFolder(Path save) { return save.resolve(SAVE_DATAPACK_FOLDER); }
+	public static Path getDatapackFolder(String save) { return getDatapackFolder(getSaveFolder(save)); }
+
+	public static Stream<Path> getSaves() { return Util.listDirs(savesFolder()); }
+	public static Stream<Path> getDatapacks() { return getSaves().flatMap(Properties::getDatapacks); }
+
+	public static Stream<Path> getDatapacks(Path save)   { return Util.listDirs(getDatapackFolder(save)); }
+	public static Stream<Path> getDatapacks(String save) { return Util.listDirs(getDatapackFolder(save)); }
+
+	// ------------------
+	// | INITIALIZATION |
+	// ------------------
 
 	public static void init()
 	{
 		Properties.initOs();
 		Properties.initMinecraftFolder();
+		Util.safeOp(os().getAppDir(), Properties::initProgramFolder);
 	}
 
-	public static void initOs()
+	private static void initOs()
 	{
-		OPERATING_SYSTEM = OS.get();
+		OS = Os.get();
 
-		if (OPERATING_SYSTEM == null)
+		if (OS == null)
 		{
-			App.logger().error(String.format
+			App.logger().error("A wild operating system appeared! '%s' isn't in the osdex...\nTry with one of these instead: %s".formatted
 			(
-				"A wild operating system appeared!\n'%s' isn't in the osdex...\nTry with one of these instead: %s",
 				System.getProperty("os.name"),
-				Arrays.toString(fr.az.crispack.property.OS.values())
+				Arrays.toString(Os.values()).toLowerCase()
 			));
 
-			System.exit(0);
+			System.exit(1);
 		}
 	}
 
-	public static void initMinecraftFolder()
+	private static void initMinecraftFolder()
 	{
-		MC_FOLDER = Path.of(Properties.os().getMinecraftPath());
+		MC_FOLDER = Path.of(os().getMinecraftPath());
 
-		if (Files.notExists(MC_FOLDER) || !Files.isDirectory(MC_FOLDER))
+		if (!Util.existsDir(MC_FOLDER))
 		{
 			App.logger().error("Uh Oh... Looks like minecraft isn't installed on your machine!\nYou should play it, it's a nice game :D");
-			System.exit(0);
+			System.exit(1);
 		}
 
 		SAVES_FOLDER = MC_FOLDER.resolve("saves");
-		if (Files.notExists(SAVES_FOLDER) || !Files.isDirectory(SAVES_FOLDER))
+		if (!Util.existsDir(SAVES_FOLDER))
 		{
-			App.logger().error("You are lacking... ZA WARUDO! (seriously, there's no map on your computer)");
-			System.exit(0);
+			App.logger().error("Where has the world gone? There's no map in your minecraft folder...");
+			System.exit(1);
 		}
 	}
 
-	public static void initProgramFolder() throws IOException
+	public static Void initProgramFolder(String workingDir) throws IOException
 	{
-		PROGRAM_FOLDER = Path.of(Properties.os().getWorkingDir(), Properties.appName()).toRealPath();
-		DATAPACKS_FOLDER = PROGRAM_FOLDER.resolve("datapacks");
-		RESOURCEPACKS_FOLDER = PROGRAM_FOLDER.resolve("resourcepacks");
+		APP_FOLDER = Path.of(os().getAppDir(), APP_NAME).toRealPath();
+		Files.createDirectories(APP_FOLDER);
 
-		Files.createFile(PROGRAM_FOLDER);
-		Files.createFile(DATAPACKS_FOLDER);
-		Files.createFile(RESOURCEPACKS_FOLDER);
+		for (PackType type : PackType.values())
+			Files.createDirectories(getAppPath(type));
+
+		return null;
 	}
 }

@@ -2,7 +2,7 @@ package fr.az.crispack.property;
 
 public enum Header
 {
-	USER_AGENT("User-Agent", "Datapack Dependency Manager"),
+	USER_AGENT("User-Agent", "CRISPACK-CAS9"),
 	;
 
 	private final String header;

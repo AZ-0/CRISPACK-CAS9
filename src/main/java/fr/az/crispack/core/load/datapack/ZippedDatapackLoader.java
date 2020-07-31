@@ -5,7 +5,7 @@ import java.util.Optional;
 import java.util.zip.ZipFile;
 
 import fr.az.crispack.core.pack.DataPack;
-import fr.az.crispack.util.Utils;
+import fr.az.crispack.util.Util;
 
 public class ZippedDatapackLoader implements DatapackLoader
 {
@@ -13,7 +13,7 @@ public class ZippedDatapackLoader implements DatapackLoader
 
 	public ZippedDatapackLoader(Path path)
 	{
-		this.zip = Utils.safeOp(path.toFile(), ZipFile::new);
+		this.zip = Util.safeOp(path.toFile(), ZipFile::new);
 	}
 
 	@Override

@@ -12,7 +12,7 @@ import org.json.JSONObject;
 import fr.az.crispack.core.dependency.DependencyNode;
 import fr.az.crispack.core.pack.PackType;
 import fr.az.crispack.core.version.Version;
-import fr.az.crispack.util.Utils;
+import fr.az.crispack.util.Util;
 
 public class McMetaReader
 {
@@ -25,7 +25,7 @@ public class McMetaReader
 
 		try
 		{
-			obj = new JSONObject(Utils.getContent(mcmeta));
+			obj = new JSONObject(Util.getContent(mcmeta));
 			this.checkHas("base compound", obj, "meta");
 		} catch (JSONException e)
 		{

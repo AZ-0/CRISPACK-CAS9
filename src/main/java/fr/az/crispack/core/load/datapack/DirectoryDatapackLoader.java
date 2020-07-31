@@ -48,6 +48,6 @@ public class DirectoryDatapackLoader implements DatapackLoader
 			));
 		}
 
-		return Optional.of(new DataPack(meta, new PackIdentity(meta.author(), meta.name(), meta.version(), PackType.DATA_PACK)));
+		return Optional.of(new DataPack(meta, new PackIdentity(meta.author(), meta.name(), meta.version(), PackType.DATAPACK)));
 	}
 }

@@ -2,14 +2,14 @@ package fr.az.crispack.property;
 
 import java.io.File;
 
-public enum OS
+public enum Os
 {
 	WINDOWS	(System.getenv("AppData"),			".minecraft"),
 	UNIX	(System.getProperty("user.home"),	".minecraft"),
 	MAC		(System.getProperty("user.home"),	"Library/Application Support/minecraft")
 	;
 
-	public static OS get()
+	public static Os get()
 	{
 		String os = System.getProperty("os.name").toLowerCase();
 
@@ -28,13 +28,13 @@ public enum OS
 	private final String workingDir;
 	private final String mcPath;
 
-	private OS(String workingDir, String mcPath)
+	private Os(String workingDir, String mcPath)
 	{
 		this.workingDir = workingDir;
 		this.mcPath = mcPath;
 	}
 
-	public String getWorkingDir() { return this.workingDir; }
+	public String getAppDir() { return this.workingDir; }
 	public String getMinecraftPath() { return this.workingDir + File.separatorChar + this.mcPath; }
 
 	@Override public String toString() { return this.name().toLowerCase(); }

@@ -9,7 +9,7 @@ import fr.az.crispack.core.load.datapack.ZippedDatapackLoader;
 
 public class LoadingFactory
 {
-	public DatapackLoader produceDatapackLoader(Path datapack)
+	public DatapackLoader getDatapackLoader(Path datapack)
 	{
 		if (Files.isDirectory(datapack))
 			return new DirectoryDatapackLoader(datapack);
