@@ -84,7 +84,8 @@ public class GithubRequests
 		return Mono
 			.justOrEmpty(this.tables.get(identity))
 			.switchIfEmpty(this.getTable(source.type(), identity))
-			.map(table -> table.get(source.version().name()))
+			.map(table -> table.get(source.version().raw()))
+			.doOnSuccess(tag -> { if (tag == null) App.logger().warning("Couldn't resolve "+ source); })
 			.flatMapMany(GithubTag::getDependencies);
 	}
 }

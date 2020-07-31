@@ -8,26 +8,20 @@ import fr.az.crispack.core.pack.DataPack;
 
 public interface DatapackLoader
 {
-	default Optional<DataPack> loadDataPack(String save)
+	default Optional<DataPack> load(String save)
 	{
-		Optional<DataPack> loaded;
-
 		try
 		{
-			loaded = this.loadDataPackUnhandled(save);
-			loaded.ifPresentOrElse
-			(
-				dp -> App.logger().info("Successfully loaded %s [%s]".formatted(dp.name(), save)),
-				() -> {}
-			);
-		} catch (PackLoadingException e)
-		{
-			loaded = Optional.empty();
-			App.logger().warning(e.getMessage());
+			Optional<DataPack> loaded = this.loadFrom(save);
+			loaded.ifPresent(dp -> App.logger().info("Successfully loaded %s [%s]".formatted(dp.name(), save)));
+			return loaded;
 		}
-
-		return loaded;
+		catch (PackLoadingException e)
+		{
+			App.logger().error(e.getMessage());
+			return Optional.empty();
+		}
 	}
 
-	public Optional<DataPack> loadDataPackUnhandled(String save) throws PackLoadingException;
+	public Optional<DataPack> loadFrom(String save) throws PackLoadingException;
 }

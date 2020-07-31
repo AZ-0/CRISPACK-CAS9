@@ -102,16 +102,16 @@ public class Util
 	// OPERATIONS
 
 	public static <R, U, T extends Throwable> U safeOp(R in, CheckedFunction<R, U, T> op) {
-		return Util.safeOp(in, op, Util.errorLogger(() -> null), () -> null); }
+		return safeOp(in, op, runtimeThrower(), runtimeThrower()); }
 
 	public static <R, U, T extends Throwable> U safeOp(R in, CheckedFunction<R, U, T> op, Supplier<U> checked) {
-		return Util.safeOp(in, op, Util.errorLogger(checked), () -> null); }
+		return safeOp(in, op, errorLogger(checked), runtimeThrower()); }
 
 	public static <R, U, T extends Throwable> U safeOp(R in, CheckedFunction<R, U, T> op, Supplier<U> checked, Supplier<U> unchecked) {
-		return Util.safeOp(in, op, Util.errorLogger(checked), unchecked); }
+		return safeOp(in, op, errorLogger(checked), unchecked); }
 
-	public static <R, U, T extends Throwable> U safeOp(R in, CheckedFunction<R, U, T> op, Function<T, U> checked, Supplier<U> valueOnUnchecked) {
-		return Util.safeOp(in, op, checked, Util.errorLogger(valueOnUnchecked)); }
+	public static <R, U, T extends Throwable> U safeOp(R in, CheckedFunction<R, U, T> op, Function<T, U> checked, Supplier<U> unchecked) {
+		return safeOp(in, op, checked, errorLogger(unchecked)); }
 
 	public static <R, U, T extends Throwable> U safeOp(R in, CheckedFunction<R, U, T> op, Function<T, U> checked, Function<Throwable, U> unchecked)
 	{
@@ -125,6 +125,16 @@ public class Util
 
 			return unchecked.apply(throwable);
 		}
+	}
+
+	public static <T extends Throwable, U> Function<T, U> runtimeThrower()
+	{
+		return Util.<T, U, RuntimeException>errorThrower(RuntimeException::new)::apply;
+	}
+
+	public static <T extends Throwable, U, R extends Throwable> CheckedFunction<T, U, R> errorThrower(Function<T, R> errorMapper)
+	{
+		return error -> { throw errorMapper.apply(error); };
 	}
 
 	public static <T extends Throwable, U> Function<T, U> errorLogger(Supplier<U> value)

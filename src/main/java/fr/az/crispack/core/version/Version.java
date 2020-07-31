@@ -1,6 +1,6 @@
 package fr.az.crispack.core.version;
 
-public interface Version extends Comparable<Version>
+public record Version(String raw)
 {
-	String name();
+	@Override public String toString() { return this.raw; }
 }

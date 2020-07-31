@@ -11,6 +11,7 @@ import java.nio.file.Path;
 
 import fr.az.crispack.App;
 import fr.az.crispack.core.dependency.Dependency;
+import fr.az.crispack.core.dependency.extract.ZipDependencyExtractor;
 import fr.az.crispack.util.Util;
 
 import reactor.core.publisher.Flux;
@@ -35,11 +36,10 @@ public class GithubTag
 
 	public Flux<Dependency> getDependencies()
 	{
-		Mono<Path> file = this.getFile();
-
-		// TODO: Feed dependency file to dependency reader
-
-		return file.thenMany(Flux.empty());
+		return this
+				.getFile()
+				.flatMap(file -> Mono.fromCallable(() -> ZipDependencyExtractor.of(file)))
+				.flatMapIterable(ZipDependencyExtractor::extract);
 	}
 
 	private Mono<Path> getFile()
@@ -63,7 +63,7 @@ public class GithubTag
 				.build();
 
 		return Mono
-				.fromFuture(App.http().sendAsync(request, HttpResponse.BodyHandlers.ofFileDownload(to)))
+				.fromFuture(() -> App.http().sendAsync(request, HttpResponse.BodyHandlers.ofFileDownload(to)))
 				.map(HttpResponse::body);
 	}
 

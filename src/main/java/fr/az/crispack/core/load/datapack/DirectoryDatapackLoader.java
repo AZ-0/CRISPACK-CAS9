@@ -2,20 +2,22 @@ package fr.az.crispack.core.load.datapack;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Optional;
 
+import org.json.JSONObject;
+
+import fr.az.crispack.core.dependency.Dependency;
+import fr.az.crispack.core.dependency.extract.JSONDependencyExtractor;
 import fr.az.crispack.core.load.PackLoadingException;
-import fr.az.crispack.core.load.meta.InvalidMetaException;
-import fr.az.crispack.core.load.meta.McMeta;
-import fr.az.crispack.core.load.meta.McMetaReader;
 import fr.az.crispack.core.pack.DataPack;
 import fr.az.crispack.core.pack.PackIdentity;
 import fr.az.crispack.core.pack.PackType;
+import fr.az.crispack.core.version.Version;
+import fr.az.crispack.util.Util;
 
 public class DirectoryDatapackLoader implements DatapackLoader
 {
-	private static final McMetaReader META_READER = new McMetaReader();
-
 	private final Path dir;
 
 	public DirectoryDatapackLoader(Path path)
@@ -27,27 +29,37 @@ public class DirectoryDatapackLoader implements DatapackLoader
 	}
 
 	@Override
-	public Optional<DataPack> loadDataPackUnhandled(String save) throws PackLoadingException
+	public Optional<DataPack> loadFrom(String save) throws PackLoadingException
 	{
 		if (this.dir == null)
 			return Optional.empty();
 
 		Path mcmeta = this.dir.resolve("pack.mcmeta");
-		McMeta meta;
+		return Optional.ofNullable(this.read(mcmeta));
+	}
 
-		try
-		{
-			meta = META_READER.read(mcmeta.toFile());
-		} catch (InvalidMetaException e)
-		{
-			throw new PackLoadingException("Could not read pack.mcmeta for datapack %s [%s]:\n\t - %s".formatted
-			(
-				this.dir.getFileName().toString(),
-				save,
-				e.getMessage()
-			));
-		}
+	private DataPack read(Path file) throws PackLoadingException
+	{
+		JSONObject meta = new JSONObject(Util.safeOp(file, Files::readString));
 
-		return Optional.of(new DataPack(meta, new PackIdentity(meta.author(), meta.name(), meta.version(), PackType.DATAPACK)));
+		PackIdentity identity = this.getIdentity(meta.optJSONObject("pack"));
+		List<Dependency> dependencies = JSONDependencyExtractor.file(meta, file).extract();
+
+		return new DataPack(identity, dependencies);
+	}
+
+	private PackIdentity getIdentity(JSONObject obj) throws PackLoadingException
+	{
+		if (obj == null)
+			throw new PackLoadingException("Error in pack.mcmeta: Missing mandatory json key 'pack'");
+
+		String author	= obj.optString("author", null);
+		String name		= obj.optString("name", null);
+		String version	= obj.optString("name", null);
+
+		if (author == null || name == null || version == null)
+			throw new PackLoadingException("Error in pack.mcmeta: Missing either of 'author', 'name' or 'version' key in 'pack'");
+
+		return new PackIdentity(author, name, new Version(version), PackType.DATAPACK);
 	}
 }

@@ -17,7 +17,7 @@ public class ZippedDatapackLoader implements DatapackLoader
 	}
 
 	@Override
-	public Optional<DataPack> loadDataPackUnhandled(String save)
+	public Optional<DataPack> loadFrom(String save)
 	{
 		if (this.zip == null)
 			return Optional.empty();

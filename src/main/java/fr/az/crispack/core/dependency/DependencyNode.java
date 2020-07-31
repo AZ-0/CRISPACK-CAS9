@@ -33,8 +33,8 @@ public class DependencyNode extends Node<DependencyNode, NodeIdentity>
 	public boolean hasVersion() { return this.dependency().hasVersion(); }
 	public VersionedDependency withVersion() { return this.dependency().withVersion(); }
 
-	public Flux<DependencyNode> collect() {
-		// TODO Auto-generated method stub
-		return null;
+	public Flux<DependencyNode> collect()
+	{
+		return this.dependency().collect().map(NodeIdentity::new).map(this::getOrNewChild);
 	}
 }

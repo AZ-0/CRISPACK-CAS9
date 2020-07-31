@@ -118,7 +118,7 @@ public class PackLoader
 
 	public Optional<DataPack> loadDataPack(String save, Path path)
 	{
-		return LOADING_FACTORY.getDatapackLoader(path).loadDataPack(save);
+		return LOADING_FACTORY.getDatapackLoader(path).load(save);
 	}
 
 	private void register(Save save)

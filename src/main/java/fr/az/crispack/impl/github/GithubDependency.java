@@ -28,4 +28,10 @@ public record GithubDependency(String author, String repository, PackType type, 
 			&& to.repository.equals(this.repository)
 			&& to.type.equals(this.type);
 	}
+
+	@Override
+	public String toString()
+	{
+		return "github[%s, %s:%s:%s]".formatted(this.type.dirName(), this.author, this.repository, this.version);
+	}
 }

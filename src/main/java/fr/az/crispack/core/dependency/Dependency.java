@@ -16,4 +16,15 @@ public interface Dependency
 
 	default boolean hasVersion() { return false; }
 	default VersionedDependency withVersion() { return null; }
+
+	enum Kind
+	{
+		GITHUB,
+		GITLAB,
+		LINK,
+		PATH,
+		;
+
+		public String key() { return this.name().toLowerCase(); }
+	}
 }

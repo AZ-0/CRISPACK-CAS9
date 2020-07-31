@@ -20,7 +20,7 @@ class GithubTable
 		this.repo = repository;
 	}
 
-	public void add(String tag, String sha, String zipURL)
+	void add(String tag, String sha, String zipURL)
 	{
 		this.tags.put(tag, new GithubTag(this, tag, sha, zipURL));
 	}
