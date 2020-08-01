@@ -8,10 +8,11 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.function.Function;
 
 import fr.az.crispack.App;
 import fr.az.crispack.core.dependency.Dependency;
-import fr.az.crispack.core.dependency.extract.ZipDependencyExtractor;
+import fr.az.crispack.core.dependency.extract.DependencyExtractor;
 import fr.az.crispack.util.Util;
 
 import reactor.core.publisher.Flux;
@@ -38,8 +39,9 @@ public class GithubTag
 	{
 		return this
 				.getFile()
-				.flatMap(file -> Mono.fromCallable(() -> ZipDependencyExtractor.of(file)))
-				.flatMapIterable(ZipDependencyExtractor::extract);
+				.map(DependencyExtractor::of)
+				.flatMap(extractor -> Mono.fromCallable(extractor::extract))
+				.flatMapIterable(Function.identity());
 	}
 
 	private Mono<Path> getFile()

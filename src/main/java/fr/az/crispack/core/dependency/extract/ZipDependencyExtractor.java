@@ -1,27 +1,23 @@
 package fr.az.crispack.core.dependency.extract;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import fr.az.crispack.core.dependency.Dependency;
 import fr.az.crispack.core.dependency.context.ZipReadingContext;
-import fr.az.crispack.util.Util;
 
 public class ZipDependencyExtractor extends DependencyExtractor
 {
-	public static ZipDependencyExtractor of(Path file) throws ZipException, IOException
+	public static ZipDependencyExtractor of(Path file)
 	{
 		return new ZipDependencyExtractor(new ZipReadingContext(file));
-	}
-
-	public static ZipDependencyExtractor of(Path file, ZipFile zip)
-	{
-		return new ZipDependencyExtractor(new ZipReadingContext(file, zip));
 	}
 
 	public ZipDependencyExtractor(ZipReadingContext context)
@@ -30,10 +26,20 @@ public class ZipDependencyExtractor extends DependencyExtractor
 	}
 
 	@Override
-	public List<Dependency> extract()
+	public List<Dependency> extract() throws DependencyExtractionException
 	{
-		ZipFile zip = this.context().asZip().zip();
-		String content = Util.getContent(Util.safeOp(zip.getEntry("pack.mcmeta"), zip::getInputStream));
-		return new JSONDependencyExtractor(new JSONObject(content), this.context()).extract();
+		try
+		(
+			ZipFile zip = this.context().asZip().zip();
+			BufferedReader br = new BufferedReader(new InputStreamReader(zip.getInputStream(zip.getEntry("pack.mcmeta"))))
+		)
+		{
+			String content = br.lines().reduce("", String::concat);
+			return new JSONDependencyExtractor(new JSONObject(content), this.context()).extract();
+		}
+		catch (IOException | JSONException e)
+		{
+			throw new DependencyExtractionException(e.getMessage());
+		}
 	}
 }

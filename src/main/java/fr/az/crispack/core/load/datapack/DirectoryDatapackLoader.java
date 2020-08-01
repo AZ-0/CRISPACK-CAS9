@@ -1,20 +1,22 @@
 package fr.az.crispack.core.load.datapack;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import fr.az.crispack.core.dependency.Dependency;
+import fr.az.crispack.core.dependency.extract.DependencyExtractionException;
 import fr.az.crispack.core.dependency.extract.JSONDependencyExtractor;
 import fr.az.crispack.core.load.PackLoadingException;
 import fr.az.crispack.core.pack.DataPack;
 import fr.az.crispack.core.pack.PackIdentity;
 import fr.az.crispack.core.pack.PackType;
 import fr.az.crispack.core.version.Version;
-import fr.az.crispack.util.Util;
 
 public class DirectoryDatapackLoader implements DatapackLoader
 {
@@ -40,10 +42,19 @@ public class DirectoryDatapackLoader implements DatapackLoader
 
 	private DataPack read(Path file) throws PackLoadingException
 	{
-		JSONObject meta = new JSONObject(Util.safeOp(file, Files::readString));
+		PackIdentity identity;
+		List<Dependency> dependencies;
 
-		PackIdentity identity = this.getIdentity(meta.optJSONObject("pack"));
-		List<Dependency> dependencies = JSONDependencyExtractor.file(meta, file).extract();
+		try
+		{
+			JSONObject meta = new JSONObject(Files.readString(file));
+			identity = this.getIdentity(meta.optJSONObject("pack"));
+			dependencies = JSONDependencyExtractor.file(meta, file).extract();
+		}
+		catch (IOException | JSONException | DependencyExtractionException e)
+		{
+			throw new PackLoadingException("Could not read dependencies for datapack: "+ e.getMessage());
+		}
 
 		return new DataPack(identity, dependencies);
 	}

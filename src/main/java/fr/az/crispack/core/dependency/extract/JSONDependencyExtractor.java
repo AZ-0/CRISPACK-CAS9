@@ -1,11 +1,11 @@
 package fr.az.crispack.core.dependency.extract;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.zip.ZipException;
-import java.util.zip.ZipFile;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import fr.az.crispack.core.dependency.Dependency;
@@ -16,22 +16,18 @@ import fr.az.crispack.json.dependency.KeyDependencies;
 
 public class JSONDependencyExtractor extends DependencyExtractor
 {
+	public static JSONDependencyExtractor file(Path path) { return file(null, path); }
+
+	public static JSONDependencyExtractor file(JSONObject meta, Path path) {
+		return new JSONDependencyExtractor(meta, new FileReadingContext(path)); }
+
+	public static JSONDependencyExtractor zip(Path path) { return zip(null, path); }
+
+	public static JSONDependencyExtractor zip(JSONObject meta, Path path) {
+		return new JSONDependencyExtractor(meta, new ZipReadingContext(path)); }
+
+
 	private final JSONObject meta;
-
-	public static JSONDependencyExtractor file(JSONObject meta, Path path)
-	{
-		return new JSONDependencyExtractor(meta, new FileReadingContext(path));
-	}
-
-	public static JSONDependencyExtractor zip(JSONObject meta, Path path) throws ZipException, IOException
-	{
-		return new JSONDependencyExtractor(meta, new ZipReadingContext(path));
-	}
-
-	public static JSONDependencyExtractor zip(JSONObject meta, Path path, ZipFile zip)
-	{
-		return new JSONDependencyExtractor(meta, new ZipReadingContext(path, zip));
-	}
 
 	public JSONDependencyExtractor(JSONObject meta, ReadingContext context)
 	{
@@ -40,12 +36,27 @@ public class JSONDependencyExtractor extends DependencyExtractor
 	}
 
 	@Override
-	public List<Dependency> extract()
+	public List<Dependency> extract() throws DependencyExtractionException
 	{
-		if (this.meta == null)
-			return List.of();
+		JSONObject meta = this.meta;
 
-		JSONObject dependencies = this.meta.optJSONObject("dependencies");
+		if (meta == null && this.context().isZip())
+			return new ZipDependencyExtractor(this.context().asZip()).extract();
+
+		if (meta == null && this.context().isFile())
+			try
+			{
+				meta = new JSONObject(Files.readString(this.context().path()));
+			}
+			catch (IOException | JSONException e)
+			{
+				throw new DependencyExtractionException(e.getMessage());
+			}
+
+		if (meta == null)
+			throw new DependencyExtractionException("Unable to load pack meta for '%s'".formatted(this.context().path()));
+
+		JSONObject dependencies = meta.optJSONObject("dependencies");
 
 		return new KeyDependencies(this.context()).parse(dependencies, "pack.mcmeta");
 	}

@@ -6,18 +6,21 @@ import java.util.Objects;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
-public record ZipReadingContext(Path path, ZipFile zip) implements ReadingContext
+public class ZipReadingContext implements ReadingContext
 {
-	public ZipReadingContext(Path path) throws ZipException, IOException
+	private final Path path;
+
+	public ZipReadingContext(Path path)
 	{
-		this(path, new ZipFile(path.toFile()));
+		this.path = Objects.requireNonNull(path, "path may not be null");
 	}
 
-	public ZipReadingContext
+	public ZipFile zip() throws ZipException, IOException
 	{
-		path = Objects.requireNonNull(path, "path may not be null");
-		zip = Objects.requireNonNull(zip, "zip file may not be null");
+		return new ZipFile(this.path.toFile());
 	}
+
+	@Override public Path path() { return this.path; }
 
 	@Override public boolean isZip() { return true; }
 	@Override public ZipReadingContext asZip() { return this; }
