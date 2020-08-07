@@ -4,7 +4,7 @@ plugins
     id 'application'
 }
 
-group = 'fr.az'
+group = 'fr.az.cytokine'
 version = '1.0'
 
 sourceCompatibility = 14
@@ -25,7 +25,7 @@ dependencies {
 }
 
 application {
-	mainClassName = 'fr.az.crispack.App'
+	mainClassName = 'fr.az.cytokine.App'
 }
 
 tasks.withType(JavaCompile) { options.encoding = 'UTF-8' }
