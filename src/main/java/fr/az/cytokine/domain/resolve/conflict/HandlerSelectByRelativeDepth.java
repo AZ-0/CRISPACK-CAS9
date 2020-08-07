@@ -16,8 +16,10 @@ public class HandlerSelectByRelativeDepth implements ConflictHandler
 	{
 		int relativeDepth = registered.compareTo(concurrent);
 
-		if		(relativeDepth < 0) return this.chooseDeepest ? registered : concurrent;
-		else if (relativeDepth > 0) return this.chooseDeepest ? concurrent : registered;
+		if (relativeDepth < 0)
+			return this.chooseDeepest ? registered : concurrent;
+		else if (relativeDepth > 0)
+			return this.chooseDeepest ? concurrent : registered;
 		else
 			return ConflictHandler.getDefault().solve(registered, concurrent);
 	}
