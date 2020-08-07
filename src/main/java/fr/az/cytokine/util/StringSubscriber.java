@@ -5,8 +5,6 @@ import java.net.http.HttpResponse.BodyHandler;
 import java.util.concurrent.Flow.Subscription;
 import java.util.function.Function;
 
-import fr.az.cytokine.App;
-
 public class StringSubscriber<T> implements java.util.concurrent.Flow.Subscriber<CharSequence>
 {
 	private final StringBuilder builder = new StringBuilder();
@@ -51,7 +49,7 @@ public class StringSubscriber<T> implements java.util.concurrent.Flow.Subscriber
 
 	@Override public void onSubscribe(Subscription subscription) {}
 	@Override public synchronized void onNext(CharSequence item) { this.builder.append(item); }
-	@Override public void onError(Throwable throwable) { App.logger().error(throwable); }
+	@Override public void onError(Throwable throwable) { ; }
 	@Override public void onComplete() { this.result = this.mapper.apply(this.builder); }
 
 	public T result() { return this.result; }
