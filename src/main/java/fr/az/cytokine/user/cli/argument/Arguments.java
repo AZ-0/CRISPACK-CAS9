@@ -1,4 +1,4 @@
-package fr.az.cytokine.user.command.argument;
+package fr.az.cytokine.user.cli.argument;
 
 import java.util.HashSet;
 import java.util.Set;

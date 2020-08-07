@@ -1,4 +1,4 @@
-package fr.az.cytokine.user.command;
+package fr.az.cytokine.user.cli;
 
 import java.util.Collection;
 import java.util.Map;
@@ -14,7 +14,7 @@ import com.beust.jcommander.ParametersDelegate;
 import fr.az.cytokine.domain.Save;
 import fr.az.cytokine.domain.pack.DataPack;
 import fr.az.cytokine.server.load.PackLoader;
-import fr.az.cytokine.user.command.delegate.SelectionArgs;
+import fr.az.cytokine.user.cli.delegate.SelectionArgs;
 
 @Parameters(commandDescription = "display datapack informations")
 public class DisplayCommand extends Commands

@@ -2,7 +2,6 @@ package fr.az.cytokine.server.json.dependency.read;
 
 import java.util.List;
 
-import fr.az.cytokine.domain.dependency.Dependency;
 import fr.az.cytokine.domain.pack.PackType;
 import fr.az.cytokine.domain.version.Version;
 import fr.az.cytokine.server.dependency.context.ReadingContext;
@@ -35,5 +34,5 @@ public class KeyGithubDependency extends ObjectDependencyKey
 	}
 
 	@Override public List<Structure> getStructures() { return List.of(MANDATORY); }
-	@Override public Dependency.Kind kind() { return Dependency.Kind.GITHUB; }
+	@Override public String getKey() { return "github"; }
 }

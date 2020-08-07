@@ -17,6 +17,5 @@ public abstract class ObjectDependencyKey extends ObjectArrayKey<Dependency> imp
 		this.context = context;
 	}
 
-	@Override public String getKey() { return DependencyKey.super.getKey(); }
 	@Override public ReadingContext context() { return this.context; }
 }

@@ -1,9 +1,8 @@
 package fr.az.cytokine.domain.pack;
 
-import fr.az.cytokine.domain.Identity;
 import fr.az.cytokine.domain.version.Version;
 
-public record PackIdentity(String author, String name, Version version, PackType type) implements Identity
+public record PackIdentity(String author, String name, Version version, PackType type)
 {
 	public boolean isEmpty()
 	{

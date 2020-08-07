@@ -78,7 +78,7 @@ public class RootManager<N extends Node<N, I>, I>
 		return Optional.empty();
 	}
 
-	public VisitSignal visit(TreeVisitor<? super N, I> visitor)
+	public VisitSignal visit(TreeVisitor<? super N> visitor)
 	{
 		for (N root : this.roots.values())
 			if (visitor.traverse(root) == VisitSignal.STOP)
@@ -87,7 +87,7 @@ public class RootManager<N extends Node<N, I>, I>
 		return VisitSignal.CONTINUE;
 	}
 
-	public VisitSignal visit(TreeVisitor<? super N, I> visitor, I root)
+	public VisitSignal visit(TreeVisitor<? super N> visitor, I root)
 	{
 		N node = this.getRoot(root).orElse(null);
 

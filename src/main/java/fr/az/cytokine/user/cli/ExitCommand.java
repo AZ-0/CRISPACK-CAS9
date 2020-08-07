@@ -1,4 +1,4 @@
-package fr.az.cytokine.user.command;
+package fr.az.cytokine.user.cli;
 
 import com.beust.jcommander.Parameters;
 

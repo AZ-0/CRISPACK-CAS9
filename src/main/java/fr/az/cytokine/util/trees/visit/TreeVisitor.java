@@ -2,7 +2,7 @@ package fr.az.cytokine.util.trees.visit;
 
 import fr.az.cytokine.util.trees.Node;
 
-public interface TreeVisitor<N extends Node<N, I>, I>
+public interface TreeVisitor<N extends Node<N, ?>>
 {
 	default VisitSignal traverse(N root)
 	{

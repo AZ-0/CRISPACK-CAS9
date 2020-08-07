@@ -14,8 +14,5 @@ public interface DependencyKey<T> extends ArrayKey<T, Dependency>
 		};
 	}
 
-	Dependency.Kind kind();
 	ReadingContext context();
-
-	@Override public default String getKey() { return this.kind().key(); }
 }

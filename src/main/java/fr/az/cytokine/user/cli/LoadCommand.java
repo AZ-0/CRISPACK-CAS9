@@ -1,4 +1,4 @@
-package fr.az.cytokine.user.command;
+package fr.az.cytokine.user.cli;
 
 import java.util.Map;
 import java.util.Optional;

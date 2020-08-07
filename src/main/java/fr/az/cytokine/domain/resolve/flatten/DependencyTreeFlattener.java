@@ -8,7 +8,6 @@ import java.util.Set;
 
 import fr.az.cytokine.domain.dependency.Dependency;
 import fr.az.cytokine.domain.dependency.DependencyNode;
-import fr.az.cytokine.domain.dependency.NodeIdentity;
 import fr.az.cytokine.domain.dependency.VersionedDependency;
 import fr.az.cytokine.domain.resolve.conflict.ConflictHandler;
 import fr.az.cytokine.domain.resolve.conflict.ConflictHandlingStrategy;
@@ -16,7 +15,7 @@ import fr.az.cytokine.domain.resolve.conflict.VersionConflictException;
 import fr.az.cytokine.util.trees.visit.TreeVisitor;
 import fr.az.cytokine.util.trees.visit.VisitSignal;
 
-public class DependencyTreeFlattener implements TreeVisitor<DependencyNode, NodeIdentity>
+public class DependencyTreeFlattener implements TreeVisitor<DependencyNode>
 {
 	public static DependencyTreeFlattener of() { return builder().build(); }
 	public static Builder builder() { return new Builder(); }
@@ -39,13 +38,13 @@ public class DependencyTreeFlattener implements TreeVisitor<DependencyNode, Node
 	@Override
 	public VisitSignal visit(DependencyNode node, int depth)
 	{
-		if (!node.hasVersion())
+		if (!node.identity().dependency().hasVersion())
 		{
-			this.dependencies.add(node.dependency());
+			this.dependencies.add(node.identity().dependency());
 			return VisitSignal.CONTINUE;
 		}
 
-		VersionedDependency candidate = node.dependency().withVersion();
+		VersionedDependency candidate = node.identity().dependency().withVersion();
 		FlatDependency concurrent = new FlatDependency(candidate, depth);
 		FlatDependency registered = null;
 

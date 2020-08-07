@@ -1,4 +1,4 @@
-package fr.az.cytokine.user.command.delegate;
+package fr.az.cytokine.user.cli.delegate;
 
 public interface Delegate
 {
