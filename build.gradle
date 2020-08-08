@@ -19,9 +19,10 @@ repositories {
 dependencies {
 	configurations.implementation.extendsFrom(configurations.extra)
 	extra 'com.beust:jcommander:1.78'
-	extra 'org.json:json:20200518'
 	extra 'io.projectreactor:reactor-core:3.3.7.RELEASE'
 	extra fileTree(dir: 'libs', include: ['*.jar'])
+
+	implementation 'org.json:json:20200518'
 }
 
 application {
