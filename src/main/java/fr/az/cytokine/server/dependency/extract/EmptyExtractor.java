@@ -4,7 +4,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
-import fr.az.cytokine.domain.dependency.Dependency;
+import fr.az.cytokine.app.dependency.Dependency;
+import fr.az.cytokine.app.dependency.extract.DependencyExtractionException;
 import fr.az.cytokine.server.dependency.context.EmptyContext;
 
 public class EmptyExtractor extends DependencyExtractor

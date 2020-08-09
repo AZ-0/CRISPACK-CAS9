@@ -1,4 +1,4 @@
-package fr.az.cytokine.domain.pack;
+package fr.az.cytokine.app.pack;
 
 public enum PackType
 {

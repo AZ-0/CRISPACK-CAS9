@@ -1,4 +1,4 @@
-package fr.az.cytokine.domain.version;
+package fr.az.cytokine.app.version;
 
 public record Version(String raw)
 {

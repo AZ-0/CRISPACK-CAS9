@@ -1,4 +1,4 @@
-package fr.az.cytokine.domain.resolve.conflict;
+package fr.az.cytokine.app.resolve.conflict;
 
 public enum ConflictHandlingStrategy
 {

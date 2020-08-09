@@ -2,7 +2,7 @@ package fr.az.cytokine.server.load.datapack;
 
 import java.util.Optional;
 
-import fr.az.cytokine.domain.pack.DataPack;
+import fr.az.cytokine.app.pack.DataPack;
 import fr.az.cytokine.server.load.PackLoadingException;
 
 public interface DatapackLoader

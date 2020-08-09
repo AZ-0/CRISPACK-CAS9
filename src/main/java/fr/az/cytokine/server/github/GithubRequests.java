@@ -10,9 +10,8 @@ import java.util.Optional;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import fr.az.cytokine.App;
-import fr.az.cytokine.domain.dependency.Dependency;
-import fr.az.cytokine.domain.pack.PackType;
+import fr.az.cytokine.app.dependency.Dependency;
+import fr.az.cytokine.app.pack.PackType;
 import fr.az.cytokine.server.Net;
 import fr.az.cytokine.util.StringSubscriber;
 
@@ -35,7 +34,7 @@ public class GithubRequests
 				.build();
 
 		return Mono
-				.fromFuture(() -> App.http().sendAsync(request, StringSubscriber.handleString(JSONArray::new)))
+				.fromFuture(() -> Net.http().sendAsync(request, StringSubscriber.handleString(JSONArray::new)))
 				.map(response -> this.handleResponse(type, identity.author(), identity.repository(), response))
 				.flatMap(Mono::justOrEmpty)
 				.doOnNext(table -> this.tables.put(identity, table));

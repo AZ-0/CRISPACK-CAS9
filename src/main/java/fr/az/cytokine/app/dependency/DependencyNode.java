@@ -1,4 +1,4 @@
-package fr.az.cytokine.domain.dependency;
+package fr.az.cytokine.app.dependency;
 
 import fr.az.cytokine.util.trees.Node;
 import fr.az.cytokine.util.trees.NodeFactory;

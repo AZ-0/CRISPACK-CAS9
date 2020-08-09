@@ -1,9 +1,9 @@
-package fr.az.cytokine.domain.pack;
+package fr.az.cytokine.app.pack;
 
 import java.util.List;
 
-import fr.az.cytokine.domain.dependency.Dependency;
-import fr.az.cytokine.domain.version.Version;
+import fr.az.cytokine.app.dependency.Dependency;
+import fr.az.cytokine.app.version.Version;
 
 public record DataPack(PackIdentity identity, List<Dependency> dependencies) implements Pack
 {

@@ -1,9 +1,9 @@
 package fr.az.cytokine.server.github;
 
-import fr.az.cytokine.domain.dependency.Dependency;
-import fr.az.cytokine.domain.dependency.VersionedDependency;
-import fr.az.cytokine.domain.pack.PackType;
-import fr.az.cytokine.domain.version.Version;
+import fr.az.cytokine.app.dependency.Dependency;
+import fr.az.cytokine.app.dependency.VersionedDependency;
+import fr.az.cytokine.app.pack.PackType;
+import fr.az.cytokine.app.version.Version;
 
 import reactor.core.publisher.Flux;
 

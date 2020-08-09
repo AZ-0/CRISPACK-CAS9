@@ -1,11 +1,11 @@
-package fr.az.cytokine.domain.resolve;
+package fr.az.cytokine.app.resolve;
 
 import java.util.Collections;
 import java.util.List;
 
-import fr.az.cytokine.domain.dependency.Dependency;
-import fr.az.cytokine.domain.dependency.DependencyNode;
-import fr.az.cytokine.domain.resolve.flatten.DependencyTreeFlattener;
+import fr.az.cytokine.app.dependency.Dependency;
+import fr.az.cytokine.app.dependency.DependencyNode;
+import fr.az.cytokine.app.resolve.flatten.DependencyTreeFlattener;
 import fr.az.cytokine.util.trees.visit.VisitSignal;
 
 import reactor.core.publisher.Flux;

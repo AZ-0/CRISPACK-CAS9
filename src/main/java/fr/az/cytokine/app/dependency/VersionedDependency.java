@@ -1,6 +1,6 @@
-package fr.az.cytokine.domain.dependency;
+package fr.az.cytokine.app.dependency;
 
-import fr.az.cytokine.domain.version.Version;
+import fr.az.cytokine.app.version.Version;
 
 public interface VersionedDependency extends Dependency
 {

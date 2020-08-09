@@ -1,6 +1,6 @@
 package fr.az.cytokine.server.json.misc;
 
-import fr.az.cytokine.domain.version.Version;
+import fr.az.cytokine.app.version.Version;
 import fr.az.util.parsing.json.JSONParsingException;
 import fr.az.util.parsing.json.keys.Key;
 

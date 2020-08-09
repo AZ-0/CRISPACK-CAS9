@@ -11,8 +11,8 @@ import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 import com.beust.jcommander.ParametersDelegate;
 
-import fr.az.cytokine.domain.Save;
-import fr.az.cytokine.domain.pack.DataPack;
+import fr.az.cytokine.app.Save;
+import fr.az.cytokine.app.pack.DataPack;
 import fr.az.cytokine.server.load.PackLoader;
 import fr.az.cytokine.user.cli.delegate.SelectionArgs;
 

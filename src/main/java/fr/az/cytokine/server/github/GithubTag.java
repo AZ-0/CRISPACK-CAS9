@@ -9,8 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.function.Function;
 
-import fr.az.cytokine.App;
-import fr.az.cytokine.domain.dependency.Dependency;
+import fr.az.cytokine.app.dependency.Dependency;
 import fr.az.cytokine.server.Net;
 import fr.az.cytokine.server.dependency.extract.DependencyExtractor;
 
@@ -61,7 +60,7 @@ public class GithubTag
 		HttpRequest request = Net.request(this.url).build();
 
 		return Mono
-				.fromFuture(() -> App.http().sendAsync(request, HttpResponse.BodyHandlers.ofFileDownload(to)))
+				.fromFuture(() -> Net.http().sendAsync(request, HttpResponse.BodyHandlers.ofFileDownload(to)))
 				.map(HttpResponse::body);
 	}
 

@@ -1,4 +1,4 @@
-package fr.az.cytokine.domain.resolve.flatten;
+package fr.az.cytokine.app.resolve.flatten;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -6,12 +6,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import fr.az.cytokine.domain.dependency.Dependency;
-import fr.az.cytokine.domain.dependency.DependencyNode;
-import fr.az.cytokine.domain.dependency.VersionedDependency;
-import fr.az.cytokine.domain.resolve.conflict.ConflictHandler;
-import fr.az.cytokine.domain.resolve.conflict.ConflictHandlingStrategy;
-import fr.az.cytokine.domain.resolve.conflict.VersionConflictException;
+import fr.az.cytokine.app.dependency.Dependency;
+import fr.az.cytokine.app.dependency.DependencyNode;
+import fr.az.cytokine.app.dependency.VersionedDependency;
+import fr.az.cytokine.app.resolve.conflict.ConflictHandler;
+import fr.az.cytokine.app.resolve.conflict.ConflictHandlingStrategy;
+import fr.az.cytokine.app.resolve.conflict.VersionConflictException;
 import fr.az.cytokine.util.trees.visit.TreeVisitor;
 import fr.az.cytokine.util.trees.visit.VisitSignal;
 

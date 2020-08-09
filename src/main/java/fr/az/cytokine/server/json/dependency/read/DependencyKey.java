@@ -1,6 +1,6 @@
 package fr.az.cytokine.server.json.dependency.read;
 
-import fr.az.cytokine.domain.dependency.Dependency;
+import fr.az.cytokine.app.dependency.Dependency;
 import fr.az.cytokine.server.dependency.context.ReadingContext;
 import fr.az.util.parsing.json.keys.types.ArrayKey;
 

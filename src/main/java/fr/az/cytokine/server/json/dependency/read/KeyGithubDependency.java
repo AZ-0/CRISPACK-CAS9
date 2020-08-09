@@ -2,8 +2,8 @@ package fr.az.cytokine.server.json.dependency.read;
 
 import java.util.List;
 
-import fr.az.cytokine.domain.pack.PackType;
-import fr.az.cytokine.domain.version.Version;
+import fr.az.cytokine.app.pack.PackType;
+import fr.az.cytokine.app.version.Version;
 import fr.az.cytokine.server.dependency.context.ReadingContext;
 import fr.az.cytokine.server.github.GithubDependency;
 import fr.az.cytokine.server.json.Keys;

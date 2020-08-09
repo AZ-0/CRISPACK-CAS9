@@ -3,7 +3,7 @@ package fr.az.cytokine.server.github;
 import java.util.HashMap;
 import java.util.Map;
 
-import fr.az.cytokine.domain.pack.PackType;
+import fr.az.cytokine.app.pack.PackType;
 
 class GithubTable
 {

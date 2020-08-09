@@ -7,8 +7,8 @@ import java.util.function.BiFunction;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 
-import fr.az.cytokine.domain.Save;
-import fr.az.cytokine.domain.pack.DataPack;
+import fr.az.cytokine.app.Save;
+import fr.az.cytokine.app.pack.DataPack;
 import fr.az.cytokine.server.load.PackLoader;
 
 @Parameters(commandDescription = "Load and reload maps or datapacks")

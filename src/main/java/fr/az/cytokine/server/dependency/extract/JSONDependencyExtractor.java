@@ -8,7 +8,8 @@ import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import fr.az.cytokine.domain.dependency.Dependency;
+import fr.az.cytokine.app.dependency.Dependency;
+import fr.az.cytokine.app.dependency.extract.DependencyExtractionException;
 import fr.az.cytokine.server.dependency.context.FileReadingContext;
 import fr.az.cytokine.server.dependency.context.ReadingContext;
 import fr.az.cytokine.server.dependency.context.ZipReadingContext;

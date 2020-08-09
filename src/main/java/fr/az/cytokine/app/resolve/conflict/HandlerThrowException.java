@@ -1,6 +1,6 @@
-package fr.az.cytokine.domain.resolve.conflict;
+package fr.az.cytokine.app.resolve.conflict;
 
-import fr.az.cytokine.domain.resolve.flatten.FlatDependency;
+import fr.az.cytokine.app.resolve.flatten.FlatDependency;
 
 public class HandlerThrowException implements ConflictHandler
 {

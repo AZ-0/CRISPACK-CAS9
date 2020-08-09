@@ -2,9 +2,9 @@ package fr.az.cytokine.server.json;
 
 import java.util.List;
 
-import fr.az.cytokine.domain.pack.PackIdentity;
-import fr.az.cytokine.domain.pack.PackType;
-import fr.az.cytokine.domain.version.Version;
+import fr.az.cytokine.app.pack.PackIdentity;
+import fr.az.cytokine.app.pack.PackType;
+import fr.az.cytokine.app.version.Version;
 import fr.az.util.parsing.json.JSONParsingException;
 import fr.az.util.parsing.json.keys.structure.Mandatory;
 import fr.az.util.parsing.json.keys.structure.Optional;

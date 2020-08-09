@@ -1,6 +1,6 @@
-package fr.az.cytokine.domain.pack;
+package fr.az.cytokine.app.pack;
 
-import fr.az.cytokine.domain.version.Version;
+import fr.az.cytokine.app.version.Version;
 
 public interface Pack
 {

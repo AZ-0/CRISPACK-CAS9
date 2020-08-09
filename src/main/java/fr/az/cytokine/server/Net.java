@@ -1,12 +1,22 @@
 package fr.az.cytokine.server;
 
 import java.net.URI;
+import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 
 import fr.az.cytokine.server.property.Properties;
 
 public class Net
 {
+	private final static HttpClient http;
+
+	static
+	{
+		http = HttpClient.newBuilder().build();
+	}
+
+	public static HttpClient http() { return http; }
+
 	public static HttpRequest.Builder request(String uri) {
 		return request(URI.create(uri)); }
 
