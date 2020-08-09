@@ -6,5 +6,5 @@ import fr.az.cytokine.app.dependency.extract.DependencyExtractor;
 
 public interface DependencyExtractorFactory
 {
-	DependencyExtractor of(Path path);
+	DependencyExtractor get(Path path);
 }

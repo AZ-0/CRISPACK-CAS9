@@ -14,7 +14,7 @@ import fr.az.cytokine.app.dependency.Dependency;
 import fr.az.cytokine.app.dependency.extract.DependencyExtractionException;
 import fr.az.cytokine.server.dependency.context.ZipReadingContext;
 
-public class ZipDependencyExtractor extends DependencyExtractor
+public class ZipDependencyExtractor extends AbstractDependencyExtractor
 {
 	public static ZipDependencyExtractor of(Path file)
 	{

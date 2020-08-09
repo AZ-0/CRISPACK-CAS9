@@ -15,7 +15,7 @@ import fr.az.cytokine.server.dependency.context.ReadingContext;
 import fr.az.cytokine.server.dependency.context.ZipReadingContext;
 import fr.az.cytokine.server.json.dependency.KeyDependencies;
 
-public class JSONDependencyExtractor extends DependencyExtractor
+public class JSONDependencyExtractor extends AbstractDependencyExtractor
 {
 	public static JSONDependencyExtractor file(Path path) { return file(null, path); }
 
