@@ -1,6 +1,6 @@
 package fr.az.cytokine;
 
-import fr.az.cytokine.server.property.Properties;
+import fr.az.cytokine.infra.server.property.Properties;
 
 public class App
 {
