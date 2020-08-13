@@ -6,7 +6,7 @@ import java.util.zip.ZipFile;
 
 import fr.az.cytokine.app.pack.DataPack;
 
-public class ZippedDatapackLoader implements DatapackLoader
+class ZippedDatapackLoader implements DatapackLoader
 {
 	private final ZipFile zip;
 

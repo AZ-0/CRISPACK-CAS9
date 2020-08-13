@@ -2,15 +2,16 @@ package fr.az.cytokine.infra.server.dependency.extract;
 
 import java.util.Objects;
 
-import fr.az.cytokine.infra.server.dependency.context.ReadingContext;
+import fr.az.cytokine.domain.dependency.extract.DependencyExtractor;
+import fr.az.cytokine.infra.server.dependency.extract.context.ReadingContext;
 
-public abstract class AbstractDependencyExtractor implements fr.az.cytokine.domain.dependency.extract.DependencyExtractor
+abstract class AbstractDependencyExtractor implements DependencyExtractor
 {
 	private final ReadingContext context;
 
 	public AbstractDependencyExtractor(ReadingContext context)
 	{
-		this.context = Objects.requireNonNull(context, "can only extract with non-null reading context");
+		this.context = Objects.requireNonNull(context);
 	}
 
 	public ReadingContext context() { return this.context; }

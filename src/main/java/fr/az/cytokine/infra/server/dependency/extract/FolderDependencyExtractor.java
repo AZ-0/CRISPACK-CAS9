@@ -6,22 +6,19 @@ import java.util.List;
 import fr.az.cytokine.app.dependency.Dependency;
 import fr.az.cytokine.domain.dependency.extract.DependencyExtractionException;
 import fr.az.cytokine.domain.dependency.extract.DependencyExtractor;
-import fr.az.cytokine.infra.server.dependency.context.FileReadingContext;
 
-public class FolderDependencyExtractor extends AbstractDependencyExtractor
+class FolderDependencyExtractor implements DependencyExtractor
 {
 	public static FolderDependencyExtractor of(Path folder)
 	{
-		return new FolderDependencyExtractor(new FileReadingContext(folder));
+		return new FolderDependencyExtractor(folder.resolve("pack.mcmeta"));
 	}
 
 	private final DependencyExtractor proxy;
 
-	public FolderDependencyExtractor(FileReadingContext context)
+	public FolderDependencyExtractor(Path meta)
 	{
-		super(context);
-		Path path = this.context().path().resolve("pack.mcmeta");
-		this.proxy = new DependencyExtractionFactory().get(path);
+		this.proxy = new DependencyExtractorFactoryImpl().get(meta);
 	}
 
 	@Override

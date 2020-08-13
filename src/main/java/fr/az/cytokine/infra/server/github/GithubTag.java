@@ -11,7 +11,7 @@ import java.util.function.Function;
 
 import fr.az.cytokine.app.dependency.Dependency;
 import fr.az.cytokine.infra.server.Net;
-import fr.az.cytokine.infra.server.dependency.extract.DependencyExtractionFactory;
+import fr.az.cytokine.infra.server.dependency.extract.DependencyExtractorFactoryImpl;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -37,7 +37,7 @@ public class GithubTag
 	{
 		return this
 				.getFile()
-				.map(path -> new DependencyExtractionFactory().get(path))
+				.map(path -> new DependencyExtractorFactoryImpl().get(path))
 				.flatMap(extractor -> Mono.fromCallable(extractor::extract))
 				.flatMapIterable(Function.identity());
 	}

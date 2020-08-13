@@ -10,12 +10,13 @@ import org.json.JSONObject;
 
 import fr.az.cytokine.app.dependency.Dependency;
 import fr.az.cytokine.domain.dependency.extract.DependencyExtractionException;
-import fr.az.cytokine.infra.server.dependency.context.FileReadingContext;
-import fr.az.cytokine.infra.server.dependency.context.ReadingContext;
-import fr.az.cytokine.infra.server.dependency.context.ZipReadingContext;
-import fr.az.cytokine.infra.server.json.dependency.KeyDependencies;
+import fr.az.cytokine.infra.server.dependency.extract.context.FileReadingContext;
+import fr.az.cytokine.infra.server.dependency.extract.context.ReadingContext;
+import fr.az.cytokine.infra.server.dependency.extract.context.ZipReadingContext;
+import fr.az.cytokine.infra.server.json.Keys;
+import fr.az.util.parsing.json.JSONParsingException;
 
-public class JSONDependencyExtractor extends AbstractDependencyExtractor
+class JSONDependencyExtractor extends AbstractDependencyExtractor
 {
 	public static JSONDependencyExtractor file(Path path) { return file(null, path); }
 
@@ -59,6 +60,13 @@ public class JSONDependencyExtractor extends AbstractDependencyExtractor
 
 		JSONObject dependencies = meta.optJSONObject("dependencies");
 
-		return new KeyDependencies(this.context()).parse(dependencies, "pack.mcmeta");
+		try
+		{
+			return Keys.DEPENDENCIES.parse(dependencies);
+		}
+		catch (JSONParsingException e)
+		{
+			throw new DependencyExtractionException(e.getMessage());
+		}
 	}
 }

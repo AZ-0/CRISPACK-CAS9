@@ -6,9 +6,9 @@ import java.util.List;
 
 import fr.az.cytokine.app.dependency.Dependency;
 import fr.az.cytokine.domain.dependency.extract.DependencyExtractionException;
-import fr.az.cytokine.infra.server.dependency.context.EmptyContext;
+import fr.az.cytokine.infra.server.dependency.extract.context.EmptyContext;
 
-public class EmptyExtractor extends AbstractDependencyExtractor
+class EmptyExtractor extends AbstractDependencyExtractor
 {
 	public EmptyExtractor(Path path)
 	{

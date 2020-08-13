@@ -3,6 +3,7 @@ package fr.az.cytokine.infra.server.json;
 import java.util.regex.Pattern;
 
 import fr.az.cytokine.app.pack.PackType;
+import fr.az.cytokine.infra.server.json.dependency.KeyDependencies;
 import fr.az.cytokine.infra.server.json.misc.KeyVersion;
 import fr.az.util.parsing.json.keys.commons.KeyByte;
 import fr.az.util.parsing.json.keys.commons.KeyString;
@@ -22,4 +23,6 @@ public class Keys
 	public static final EnumKey<PackType> TYPE = new SimpleEnumKey<>(PackType.values(), "type");
 
 	public static final KeyVersion VERSION = new KeyVersion();
+	public static final KeyDependencies DEPENDENCIES = new KeyDependencies();
+	public static final KeyDataPack DATAPACK = new KeyDataPack();
 }

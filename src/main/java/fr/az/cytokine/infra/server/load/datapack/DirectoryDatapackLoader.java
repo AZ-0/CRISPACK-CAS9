@@ -3,22 +3,17 @@ package fr.az.cytokine.infra.server.load.datapack;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.Optional;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import fr.az.cytokine.app.dependency.Dependency;
 import fr.az.cytokine.app.pack.DataPack;
-import fr.az.cytokine.app.pack.PackIdentity;
-import fr.az.cytokine.app.pack.PackType;
-import fr.az.cytokine.app.version.Version;
-import fr.az.cytokine.domain.dependency.extract.DependencyExtractionException;
-import fr.az.cytokine.infra.server.dependency.extract.JSONDependencyExtractor;
+import fr.az.cytokine.infra.server.json.Keys;
 import fr.az.cytokine.infra.server.load.PackLoadingException;
+import fr.az.util.parsing.json.JSONParsingException;
 
-public class DirectoryDatapackLoader implements DatapackLoader
+class DirectoryDatapackLoader implements DatapackLoader
 {
 	private final Path dir;
 
@@ -42,35 +37,33 @@ public class DirectoryDatapackLoader implements DatapackLoader
 
 	private DataPack read(Path file) throws PackLoadingException
 	{
-		PackIdentity identity;
-		List<Dependency> dependencies;
+		DataPack pack;
 
 		try
 		{
 			JSONObject meta = new JSONObject(Files.readString(file));
-			identity = this.getIdentity(meta.optJSONObject("pack"));
-			dependencies = JSONDependencyExtractor.file(meta, file).extract();
+			pack = this.getPack(file, meta);
 		}
-		catch (IOException | JSONException | DependencyExtractionException e)
+		catch (IOException | JSONException e)
 		{
 			throw new PackLoadingException("Could not read dependencies for datapack: "+ e.getMessage());
 		}
 
-		return new DataPack(identity, dependencies);
+		return pack;
 	}
 
-	private PackIdentity getIdentity(JSONObject obj) throws PackLoadingException
+	private DataPack getPack(Path path, JSONObject content) throws PackLoadingException
 	{
-		if (obj == null)
+		if (content == null)
 			throw new PackLoadingException("Error in pack.mcmeta: Missing mandatory json key 'pack'");
 
-		String author	= obj.optString("author", null);
-		String name		= obj.optString("name", null);
-		String version	= obj.optString("name", null);
-
-		if (author == null || name == null || version == null)
-			throw new PackLoadingException("Error in pack.mcmeta: Missing either of 'author', 'name' or 'version' key in 'pack'");
-
-		return new PackIdentity(author, name, new Version(version), PackType.DATAPACK);
+		try
+		{
+			return Keys.DATAPACK.parse(content);
+		}
+		catch (JSONParsingException e)
+		{
+			throw new PackLoadingException(e.getMessage());
+		}
 	}
 }

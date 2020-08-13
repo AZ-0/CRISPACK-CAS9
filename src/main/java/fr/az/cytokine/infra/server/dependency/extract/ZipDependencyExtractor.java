@@ -12,9 +12,9 @@ import org.json.JSONObject;
 
 import fr.az.cytokine.app.dependency.Dependency;
 import fr.az.cytokine.domain.dependency.extract.DependencyExtractionException;
-import fr.az.cytokine.infra.server.dependency.context.ZipReadingContext;
+import fr.az.cytokine.infra.server.dependency.extract.context.ZipReadingContext;
 
-public class ZipDependencyExtractor extends AbstractDependencyExtractor
+class ZipDependencyExtractor extends AbstractDependencyExtractor
 {
 	public static ZipDependencyExtractor of(Path file)
 	{

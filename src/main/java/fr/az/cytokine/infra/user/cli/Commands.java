@@ -10,7 +10,6 @@ public abstract class Commands
 {
 	private static final Map<String, Commands> COMMANDS = new HashMap<>();
 
-	public static final DisplayCommand	DISPLAY	= new DisplayCommand();
 	public static final ExitCommand		EXIT	= new ExitCommand();
 	public static final LoadCommand		LOAD	= new LoadCommand();
 

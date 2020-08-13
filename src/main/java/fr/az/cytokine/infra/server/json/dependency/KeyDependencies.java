@@ -5,22 +5,21 @@ import java.util.List;
 import java.util.Map;
 
 import fr.az.cytokine.app.dependency.Dependency;
-import fr.az.cytokine.infra.server.dependency.context.ReadingContext;
 import fr.az.cytokine.infra.server.json.dependency.read.DependencyKey;
 import fr.az.util.parsing.json.JSONParsingException;
 import fr.az.util.parsing.json.keys.structure.Optional;
 import fr.az.util.parsing.json.keys.structure.Structure;
-import fr.az.util.parsing.json.keys.types.RootKey;
+import fr.az.util.parsing.json.keys.types.ObjectKey;
 
-public class KeyDependencies implements RootKey<List<Dependency>>
+public class KeyDependencies implements ObjectKey<List<Dependency>>
 {
 	private static final long serialVersionUID = -2336548736044746059L;
 
 	private final Optional optional;
 
-	public KeyDependencies(ReadingContext context)
+	public KeyDependencies()
 	{
-		this.optional = new Optional(DependencyKey.getKeys(context));
+		this.optional = new Optional(DependencyKey.getKeys());
 	}
 
 	@Override
@@ -36,10 +35,4 @@ public class KeyDependencies implements RootKey<List<Dependency>>
 	@Override public List<Structure> getStructures() { return List.of(this.optional); }
 
 	@Override public String getKey() { return "dependencies"; }
-
-	@Override
-	public void onError(JSONParsingException e, String file)
-	{
-		System.err.println("Couldn't load dependencies: "+ e.getMessage());
-	}
 }

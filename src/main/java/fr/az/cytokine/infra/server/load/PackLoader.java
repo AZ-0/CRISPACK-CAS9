@@ -10,12 +10,12 @@ import java.util.Set;
 
 import fr.az.cytokine.app.Save;
 import fr.az.cytokine.app.pack.DataPack;
+import fr.az.cytokine.infra.server.load.datapack.DatapackLoader;
+import fr.az.cytokine.infra.server.pack.SaveImpl;
 import fr.az.cytokine.infra.server.property.Properties;
 
 public class PackLoader
 {
-	private static final LoadingFactory LOADING_FACTORY = new LoadingFactory();
-
 	private final Map<String, Save> saves;
 	private final Map<String, DataPack> datapacks;
 
@@ -101,7 +101,7 @@ public class PackLoader
 
 	private Save finishLoadSave(String name, Map<String, DataPack> datapacks, Path dir, boolean register)
 	{
-		Save save = new Save(name, datapacks, dir);
+		Save save = new SaveImpl(name, datapacks);
 
 		if (register)
 			this.register(save);
@@ -111,14 +111,14 @@ public class PackLoader
 
 	public Optional<DataPack> loadDataPack(String save, Path path)
 	{
-		return LOADING_FACTORY.getDatapackLoader(path).load(save);
+		return DatapackLoader.of(path).load(save);
 	}
 
 	private void register(Save save)
 	{
 		this.saves.put(save.name(), save);
 
-		for (DataPack dp : save.datapacks().values())
+		for (DataPack dp : save.packs().values())
 			this.datapacks.put(dp.name(), dp);
 	}
 
