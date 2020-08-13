@@ -1,4 +1,4 @@
-package fr.az.cytokine.app.resolve.conflict;
+package fr.az.cytokine.app.resolve.flatten.conflict;
 
 import fr.az.cytokine.app.resolve.flatten.FlatDependency;
 

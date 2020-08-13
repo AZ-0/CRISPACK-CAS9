@@ -7,6 +7,7 @@ import java.util.function.Function;
 import fr.az.cytokine.app.dependency.Dependency;
 import fr.az.cytokine.app.dependency.tree.DependencyNode;
 import fr.az.cytokine.app.resolve.flatten.DependencyTreeFlattener;
+import fr.az.cytokine.domain.DependencyCollector;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;

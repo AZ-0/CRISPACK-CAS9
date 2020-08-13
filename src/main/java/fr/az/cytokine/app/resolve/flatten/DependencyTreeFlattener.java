@@ -11,9 +11,9 @@ import fr.az.cytokine.app.dependency.Dependency;
 import fr.az.cytokine.app.dependency.VersionedDependency;
 import fr.az.cytokine.app.dependency.tree.DependencyNode;
 import fr.az.cytokine.app.dependency.tree.DependencyTreeVisitor;
-import fr.az.cytokine.app.resolve.conflict.ConflictHandler;
-import fr.az.cytokine.app.resolve.conflict.ConflictHandlingStrategy;
-import fr.az.cytokine.app.resolve.conflict.VersionConflictException;
+import fr.az.cytokine.app.resolve.flatten.conflict.ConflictHandler;
+import fr.az.cytokine.app.resolve.flatten.conflict.ConflictHandlingStrategy;
+import fr.az.cytokine.app.resolve.flatten.conflict.VersionConflictException;
 
 public class DependencyTreeFlattener implements DependencyTreeVisitor
 {

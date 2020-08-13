@@ -11,6 +11,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import fr.az.cytokine.app.dependency.Dependency;
+import fr.az.cytokine.app.dependency.GithubDependency;
 import fr.az.cytokine.app.pack.PackType;
 import fr.az.cytokine.server.Net;
 import fr.az.cytokine.util.StringSubscriber;
@@ -78,7 +79,7 @@ public class GithubRequests
 
 	public Flux<Dependency> collectDependencies(GithubDependency source)
 	{
-		GithubTable.Identity identity = new GithubTable.Identity(source.author(), source.repository());
+		GithubTable.Identity identity = new GithubTable.Identity(source.author(), source.name());
 
 		return Mono
 			.justOrEmpty(this.tables.get(identity))

@@ -5,7 +5,7 @@ import java.util.List;
 import fr.az.cytokine.app.pack.PackType;
 import fr.az.cytokine.app.version.Version;
 import fr.az.cytokine.server.dependency.context.ReadingContext;
-import fr.az.cytokine.server.github.GithubDependency;
+import fr.az.cytokine.server.github.GithubDependencyImpl;
 import fr.az.cytokine.server.json.Keys;
 import fr.az.util.parsing.json.JSONParsingException;
 import fr.az.util.parsing.json.keys.structure.Mandatory;
@@ -23,14 +23,14 @@ public class KeyGithubDependency extends ObjectDependencyKey
 	}
 
 	@Override
-	public GithubDependency build(List<Structure> structures) throws JSONParsingException
+	public GithubDependencyImpl build(List<Structure> structures) throws JSONParsingException
 	{
 		String author	= Keys.AUTHOR	.get(MANDATORY);
 		String name		= Keys.NAME		.get(MANDATORY);
 		Version version	= Keys.VERSION	.get(MANDATORY);
 		PackType type	= Keys.TYPE		.get(MANDATORY);
 
-		return new GithubDependency(author, name, type, version);
+		return new GithubDependencyImpl(author, name, type, version);
 	}
 
 	@Override public List<Structure> getStructures() { return List.of(MANDATORY); }
