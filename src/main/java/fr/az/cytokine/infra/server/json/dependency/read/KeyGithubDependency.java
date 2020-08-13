@@ -4,10 +4,10 @@ import java.util.List;
 
 import org.json.JSONObject;
 
-import fr.az.cytokine.app.dependency.Dependency;
-import fr.az.cytokine.app.dependency.GithubDependency;
-import fr.az.cytokine.app.pack.PackType;
-import fr.az.cytokine.app.version.Version;
+import fr.az.cytokine.api.core.dependency.Dependency;
+import fr.az.cytokine.api.core.dependency.GithubDependency;
+import fr.az.cytokine.api.core.pack.PackType;
+import fr.az.cytokine.api.core.version.Version;
 import fr.az.cytokine.infra.server.github.GithubDependencyImpl;
 import fr.az.cytokine.infra.server.json.Keys;
 import fr.az.util.parsing.json.JSONParsingException;

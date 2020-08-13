@@ -10,9 +10,9 @@ import java.util.Optional;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import fr.az.cytokine.app.dependency.Dependency;
-import fr.az.cytokine.app.dependency.GithubDependency;
-import fr.az.cytokine.app.pack.PackType;
+import fr.az.cytokine.api.core.dependency.Dependency;
+import fr.az.cytokine.api.core.dependency.GithubDependency;
+import fr.az.cytokine.api.core.pack.PackType;
 import fr.az.cytokine.infra.server.Net;
 import fr.az.cytokine.util.StringSubscriber;
 
@@ -27,7 +27,7 @@ public class GithubRequests
 
 	private final Map<GithubTable.Identity, GithubTable> tables = new HashMap<>();
 
-	public Mono<GithubTable> getTable(PackType type, GithubTable.Identity identity)
+	private Mono<GithubTable> getTable(PackType type, GithubTable.Identity identity)
 	{
 		HttpRequest request = Net.request()
 				.GET()

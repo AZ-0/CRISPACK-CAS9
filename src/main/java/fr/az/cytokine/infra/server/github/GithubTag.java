@@ -9,7 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.function.Function;
 
-import fr.az.cytokine.app.dependency.Dependency;
+import fr.az.cytokine.api.core.dependency.Dependency;
 import fr.az.cytokine.infra.server.Net;
 import fr.az.cytokine.infra.server.dependency.extract.DependencyExtractorFactoryImpl;
 

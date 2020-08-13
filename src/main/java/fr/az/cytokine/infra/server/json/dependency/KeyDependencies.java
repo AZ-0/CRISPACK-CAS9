@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import fr.az.cytokine.app.dependency.Dependency;
+import fr.az.cytokine.api.core.dependency.Dependency;
 import fr.az.cytokine.infra.server.json.dependency.read.DependencyKey;
 import fr.az.util.parsing.json.JSONParsingException;
 import fr.az.util.parsing.json.keys.structure.Optional;

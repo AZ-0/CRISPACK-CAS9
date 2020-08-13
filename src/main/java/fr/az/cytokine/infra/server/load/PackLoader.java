@@ -8,8 +8,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import fr.az.cytokine.app.Save;
-import fr.az.cytokine.app.pack.DataPack;
+import fr.az.cytokine.api.core.pack.DataPack;
+import fr.az.cytokine.api.core.pack.Save;
 import fr.az.cytokine.infra.server.load.datapack.DatapackLoader;
 import fr.az.cytokine.infra.server.pack.SaveImpl;
 import fr.az.cytokine.infra.server.property.Properties;

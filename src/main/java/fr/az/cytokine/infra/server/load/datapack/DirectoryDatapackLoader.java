@@ -8,7 +8,7 @@ import java.util.Optional;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import fr.az.cytokine.app.pack.DataPack;
+import fr.az.cytokine.api.core.pack.DataPack;
 import fr.az.cytokine.infra.server.json.Keys;
 import fr.az.cytokine.infra.server.load.PackLoadingException;
 import fr.az.util.parsing.json.JSONParsingException;

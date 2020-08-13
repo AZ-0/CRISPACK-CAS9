@@ -4,7 +4,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
 
-import fr.az.cytokine.app.pack.DataPack;
+import fr.az.cytokine.api.core.pack.DataPack;
 import fr.az.cytokine.infra.server.load.PackLoadingException;
 
 public interface DatapackLoader

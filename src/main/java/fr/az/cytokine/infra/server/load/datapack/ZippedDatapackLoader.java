@@ -4,7 +4,7 @@ import java.nio.file.Path;
 import java.util.Optional;
 import java.util.zip.ZipFile;
 
-import fr.az.cytokine.app.pack.DataPack;
+import fr.az.cytokine.api.core.pack.DataPack;
 
 class ZippedDatapackLoader implements DatapackLoader
 {

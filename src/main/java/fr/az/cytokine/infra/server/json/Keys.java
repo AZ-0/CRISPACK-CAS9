@@ -2,7 +2,7 @@ package fr.az.cytokine.infra.server.json;
 
 import java.util.regex.Pattern;
 
-import fr.az.cytokine.app.pack.PackType;
+import fr.az.cytokine.api.core.pack.PackType;
 import fr.az.cytokine.infra.server.json.dependency.KeyDependencies;
 import fr.az.cytokine.infra.server.json.misc.KeyVersion;
 import fr.az.util.parsing.json.keys.commons.KeyByte;
