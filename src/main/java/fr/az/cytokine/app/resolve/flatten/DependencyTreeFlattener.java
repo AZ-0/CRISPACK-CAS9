@@ -4,18 +4,18 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import fr.az.cytokine.app.dependency.Dependency;
-import fr.az.cytokine.app.dependency.DependencyNode;
 import fr.az.cytokine.app.dependency.VersionedDependency;
+import fr.az.cytokine.app.dependency.tree.DependencyNode;
+import fr.az.cytokine.app.dependency.tree.DependencyTreeVisitor;
 import fr.az.cytokine.app.resolve.conflict.ConflictHandler;
 import fr.az.cytokine.app.resolve.conflict.ConflictHandlingStrategy;
 import fr.az.cytokine.app.resolve.conflict.VersionConflictException;
-import fr.az.cytokine.util.trees.visit.TreeVisitor;
-import fr.az.cytokine.util.trees.visit.VisitSignal;
 
-public class DependencyTreeFlattener implements TreeVisitor<DependencyNode>
+public class DependencyTreeFlattener implements DependencyTreeVisitor
 {
 	public static DependencyTreeFlattener of() { return builder().build(); }
 	public static Builder builder() { return new Builder(); }
@@ -23,28 +23,27 @@ public class DependencyTreeFlattener implements TreeVisitor<DependencyNode>
 	private final List<Dependency> dependencies;
 	private final Set<FlatDependency> versioned;
 
-	private final VisitSignal signalOnConflict;
 	private ConflictHandler conflictHandler;
 
-	private DependencyTreeFlattener(ConflictHandler conflictHandler, VisitSignal signalOnConflict)
+	private DependencyTreeFlattener(ConflictHandler conflictHandler)
 	{
 		this.dependencies = new ArrayList<>();
 		this.versioned = new HashSet<>();
 
-		this.signalOnConflict = signalOnConflict;
 		this.conflictHandler = conflictHandler;
 	}
 
 	@Override
-	public VisitSignal visit(DependencyNode node, int depth)
+	public void visit(DependencyNode node, int depth)
 	{
-		if (!node.identity().dependency().hasVersion())
+		if (!node.dependency().hasVersion())
 		{
-			this.dependencies.add(node.identity().dependency());
-			return VisitSignal.CONTINUE;
+			this.dependencies.add(node.dependency());
+			return;
 		}
 
-		VersionedDependency candidate = node.identity().dependency().withVersion();
+		VersionedDependency candidate = node.dependency().withVersion();
+
 		FlatDependency concurrent = new FlatDependency(candidate, depth);
 		FlatDependency registered = null;
 
@@ -54,7 +53,20 @@ public class DependencyTreeFlattener implements TreeVisitor<DependencyNode>
 		{
 			FlatDependency next = iterator.next();
 
-			if (next.dependency().isSimilar(candidate) && !next.dependency().hasSameVersion(candidate))
+			if (next.dependency().equals(candidate))
+			{
+				if (depth < next.depth())
+				{
+					iterator.remove();
+					this.versioned.add(concurrent);
+				}
+
+				break;
+			}
+
+			DependencyConflictChecker conflictChecker = new DependencyConflictChecker(candidate, next.dependency());
+
+			if (conflictChecker.hasConflict())
 			{
 				iterator.remove();
 				registered = next;
@@ -63,13 +75,12 @@ public class DependencyTreeFlattener implements TreeVisitor<DependencyNode>
 		}
 
 		if (registered != null)
-			return this.handleConflict(registered, concurrent);
-
-		this.versioned.add(concurrent);
-		return VisitSignal.CONTINUE;
+			this.handleConflict(registered, concurrent);
+		else
+			this.versioned.add(concurrent);
 	}
 
-	private VisitSignal handleConflict(FlatDependency registered, FlatDependency concurrent)
+	private void handleConflict(FlatDependency registered, FlatDependency concurrent)
 	{
 		FlatDependency chosen;
 
@@ -78,53 +89,44 @@ public class DependencyTreeFlattener implements TreeVisitor<DependencyNode>
 			chosen = this.conflictHandler.solve(registered, concurrent);
 		} catch (VersionConflictException e)
 		{
-			return this.signalOnConflict;
+			e.printStackTrace();
+			return;
 		}
 
 		this.versioned.add(chosen);
-
-		return VisitSignal.CONTINUE;
 	}
 
-	public List<Dependency> finish()
+	public List<Dependency> getFlattened()
 	{
 		this.versioned.forEach(flat -> this.dependencies.add(flat.dependency()));
 		this.versioned.clear();
 		return this.dependencies;
 	}
 
-	public List<Dependency> getCurrentDependencies() { return this.dependencies; }
 	public void setConflictHandler(ConflictHandler handler) { this.conflictHandler = handler; }
+
 
 	public static class Builder
 	{
-		public static final VisitSignal DEFAULT_SIGNAL = VisitSignal.STOP;
-
 		private ConflictHandler conflictHandler;
-		private VisitSignal signalOnConflict;
+
+		public Builder()
+		{
+			this.conflictHandler(ConflictHandlingStrategy.DEFAULT);
+		}
 
 		public DependencyTreeFlattener build()
 		{
-			if (this.conflictHandler  == null) this.conflictHandler(ConflictHandlingStrategy.DEFAULT);
-			if (this.signalOnConflict == null) this.signalOnConflict(DEFAULT_SIGNAL);
-
-			return new DependencyTreeFlattener(this.conflictHandler, this.signalOnConflict);
+			return new DependencyTreeFlattener(this.conflictHandler);
 		}
 
-		public Builder conflictHandler(ConflictHandlingStrategy strategy)
-		{
-			return this.conflictHandler(ConflictHandler.of(strategy));
-		}
+
+		public Builder conflictHandler(ConflictHandlingStrategy strategy) {
+			return this.conflictHandler(ConflictHandler.of(strategy)); }
 
 		public Builder conflictHandler(ConflictHandler handler)
 		{
-			this.conflictHandler = handler;
-			return this;
-		}
-
-		public Builder signalOnConflict(VisitSignal signal)
-		{
-			this.signalOnConflict = signal;
+			this.conflictHandler = Objects.requireNonNull(handler);
 			return this;
 		}
 	}

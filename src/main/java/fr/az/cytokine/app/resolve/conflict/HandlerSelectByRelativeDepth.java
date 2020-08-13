@@ -14,7 +14,7 @@ public class HandlerSelectByRelativeDepth implements ConflictHandler
 	@Override
 	public FlatDependency solve(FlatDependency registered, FlatDependency concurrent) throws VersionConflictException
 	{
-		int relativeDepth = registered.compareTo(concurrent);
+		int relativeDepth = Integer.compare(registered.depth(), concurrent.depth());
 
 		if (relativeDepth < 0)
 			return this.chooseDeepest ? registered : concurrent;
