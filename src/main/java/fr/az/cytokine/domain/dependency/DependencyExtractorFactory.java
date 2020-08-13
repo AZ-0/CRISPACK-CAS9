@@ -1,8 +1,8 @@
-package fr.az.cytokine.domain;
+package fr.az.cytokine.domain.dependency;
 
 import java.nio.file.Path;
 
-import fr.az.cytokine.app.dependency.extract.DependencyExtractor;
+import fr.az.cytokine.domain.dependency.extract.DependencyExtractor;
 
 public interface DependencyExtractorFactory
 {

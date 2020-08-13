@@ -3,8 +3,8 @@ package fr.az.cytokine.server.dependency.extract;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import fr.az.cytokine.app.dependency.extract.DependencyExtractor;
-import fr.az.cytokine.domain.DependencyExtractorFactory;
+import fr.az.cytokine.domain.dependency.DependencyExtractorFactory;
+import fr.az.cytokine.domain.dependency.extract.DependencyExtractor;
 
 public class DependencyExtractionFactory implements DependencyExtractorFactory
 {

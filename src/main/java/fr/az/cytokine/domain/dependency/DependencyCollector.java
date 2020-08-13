@@ -1,4 +1,4 @@
-package fr.az.cytokine.domain;
+package fr.az.cytokine.domain.dependency;
 
 import fr.az.cytokine.app.dependency.Dependency;
 

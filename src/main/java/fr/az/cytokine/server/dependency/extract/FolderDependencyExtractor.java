@@ -4,8 +4,8 @@ import java.nio.file.Path;
 import java.util.List;
 
 import fr.az.cytokine.app.dependency.Dependency;
-import fr.az.cytokine.app.dependency.extract.DependencyExtractionException;
-import fr.az.cytokine.app.dependency.extract.DependencyExtractor;
+import fr.az.cytokine.domain.dependency.extract.DependencyExtractionException;
+import fr.az.cytokine.domain.dependency.extract.DependencyExtractor;
 import fr.az.cytokine.server.dependency.context.FileReadingContext;
 
 public class FolderDependencyExtractor extends AbstractDependencyExtractor

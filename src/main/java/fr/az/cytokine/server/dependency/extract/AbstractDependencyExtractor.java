@@ -4,7 +4,7 @@ import java.util.Objects;
 
 import fr.az.cytokine.server.dependency.context.ReadingContext;
 
-public abstract class AbstractDependencyExtractor implements fr.az.cytokine.app.dependency.extract.DependencyExtractor
+public abstract class AbstractDependencyExtractor implements fr.az.cytokine.domain.dependency.extract.DependencyExtractor
 {
 	private final ReadingContext context;
 

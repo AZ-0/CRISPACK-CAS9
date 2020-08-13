@@ -1,4 +1,4 @@
-package fr.az.cytokine.app.dependency.extract;
+package fr.az.cytokine.domain.dependency.extract;
 
 public class DependencyExtractionException extends Exception
 {

@@ -10,11 +10,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import fr.az.cytokine.app.dependency.Dependency;
-import fr.az.cytokine.app.dependency.extract.DependencyExtractionException;
 import fr.az.cytokine.app.pack.DataPack;
 import fr.az.cytokine.app.pack.PackIdentity;
 import fr.az.cytokine.app.pack.PackType;
 import fr.az.cytokine.app.version.Version;
+import fr.az.cytokine.domain.dependency.extract.DependencyExtractionException;
 import fr.az.cytokine.server.dependency.extract.JSONDependencyExtractor;
 import fr.az.cytokine.server.load.PackLoadingException;
 
