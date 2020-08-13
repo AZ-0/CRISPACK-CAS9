@@ -1,5 +1,7 @@
 package fr.az.cytokine.app.resolve.flatten.conflict;
 
+import java.util.Objects;
+
 import fr.az.cytokine.app.resolve.flatten.FlatDependency;
 
 public interface ConflictHandler
@@ -8,7 +10,7 @@ public interface ConflictHandler
 
 	static ConflictHandler of(ConflictHandlingStrategy strategy)
 	{
-		return switch (strategy)
+		return switch (Objects.requireNonNull(strategy))
 		{
 			case RETAIN_MIN_DEPTH		-> new HandlerSelectByRelativeDepth(false);
 			case RETAIN_MAX_DEPTH		-> new HandlerSelectByRelativeDepth(true);

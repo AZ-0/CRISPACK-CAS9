@@ -26,12 +26,17 @@ public class DependencyNode
 		return child;
 	}
 
-	public void visit(DependencyTreeVisitor visitor) { this.visit(visitor, 0); }
+	public <T extends Throwable> void visit(DependencyTreeVisitor<T> visitor) throws T
+	{
+		this.visit(visitor, 0);
+	}
 
-	private void visit(DependencyTreeVisitor visitor, int depth)
+	private <T extends Throwable> void visit(DependencyTreeVisitor<T> visitor, int depth) throws T
 	{
 		visitor.visit(this, depth);
-		this.children.forEach(child -> child.visit(visitor, depth +1));
+
+		for (DependencyNode child : this.children)
+			child.visit(visitor, depth +1);
 	}
 
 	public Dependency dependency() { return this.dependency; }

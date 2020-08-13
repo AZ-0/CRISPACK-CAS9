@@ -2,7 +2,7 @@ package fr.az.cytokine.app.resolve.flatten.conflict;
 
 import fr.az.cytokine.app.resolve.flatten.FlatDependency;
 
-public class HandlerSelectByDeclaration implements ConflictHandler
+class HandlerSelectByDeclaration implements ConflictHandler
 {
 	private final boolean chooseFirst;
 

@@ -2,7 +2,7 @@ package fr.az.cytokine.app.resolve.flatten.conflict;
 
 import fr.az.cytokine.app.resolve.flatten.FlatDependency;
 
-public class HandlerThrowException implements ConflictHandler
+class HandlerThrowException implements ConflictHandler
 {
 	@Override
 	public FlatDependency solve(FlatDependency registered, FlatDependency concurrent) throws VersionConflictException

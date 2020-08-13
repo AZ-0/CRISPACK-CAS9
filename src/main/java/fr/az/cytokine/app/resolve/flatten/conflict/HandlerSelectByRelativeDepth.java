@@ -2,7 +2,7 @@ package fr.az.cytokine.app.resolve.flatten.conflict;
 
 import fr.az.cytokine.app.resolve.flatten.FlatDependency;
 
-public class HandlerSelectByRelativeDepth implements ConflictHandler
+class HandlerSelectByRelativeDepth implements ConflictHandler
 {
 	private final boolean chooseDeepest;
 
