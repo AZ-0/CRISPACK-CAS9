@@ -5,10 +5,11 @@ plugins
 }
 
 group = 'fr.az.cytokine'
-version = '1.0'
 
 sourceCompatibility = 14
 targetCompatibility = 14
+
+version = '1.0'
 
 configurations { extra }
 
@@ -29,7 +30,10 @@ application {
 	mainClassName = 'fr.az.cytokine.App'
 }
 
-tasks.withType(JavaCompile) { options.encoding = 'UTF-8' }
+tasks.withType(JavaCompile) {
+	options.encoding = 'UTF-8'
+	options.compilerArgs += '--enable-preview'
+}
 
 tasks.withType(Jar) {
 	from { configurations.extra.collect { it.isRepository() ? it : zipTree(it) } }
@@ -38,7 +42,7 @@ tasks.withType(Jar) {
 		attributes(
 			'Main-Class': application.mainClassName,
 			'Implementation-Title': project.name,
-			'Implementation-Version': version,
+			'Implementation-Version': archiveVersion,
 			)
 	}
 }
